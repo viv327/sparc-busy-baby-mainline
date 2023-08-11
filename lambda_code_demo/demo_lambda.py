@@ -8,5 +8,5 @@ def lambda_handler(event, context):
         'headers': {
             'Content-Type': 'text/plain'
         },
-        'body': 'Hello from Lambda created by gitHub'
+        'body': 'This lambda will be the backend for SparcBusyBaby application'
     }

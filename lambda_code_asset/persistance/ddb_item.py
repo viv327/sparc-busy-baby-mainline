@@ -2,8 +2,8 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 
-from lambda_code_demo.models.basic_info import BabyProfile
-from lambda_code_demo.models.daily_record import DailyRecord
+from lambda_code_asset.models.basic_info import BabyProfile
+from lambda_code_asset.models.daily_record import DailyRecord
 
 
 class BabyProfileDDBItemAttrs(Enum):

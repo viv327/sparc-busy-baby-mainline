@@ -1,6 +1,6 @@
 import json
 
-from lambda_code_demo.persistance.data_utils import create_baby
+from lambda_code_asset.persistance.data_utils import create_baby
 
 
 def dispatch(intent: str, slots: any):
@@ -18,7 +18,7 @@ def dispatch(intent: str, slots: any):
     return response
 
 
-def lambda_handler(event, context):
+def main(event, context):
     print('request: {}'.format(json.dumps(event)))
 
     intent = event["sessionState"]["intent"]["name"]

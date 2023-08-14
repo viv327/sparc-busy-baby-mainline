@@ -36,6 +36,7 @@ class ResourceStack(Stack):
                                                 type=dynamodb.AttributeType.STRING
                                             )
                                             )
+        daily_record_table.grant_read_write_data(function.role)
 
         baby_profile_table = dynamodb.Table(self, "SparcBusyBabyProfile",
                                             table_name="SparcBusyBabyProfile",
@@ -44,3 +45,4 @@ class ResourceStack(Stack):
                                                 type=dynamodb.AttributeType.STRING
                                             )
                                             )
+        baby_profile_table.grant_read_write_data(function.role)

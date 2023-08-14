@@ -12,10 +12,17 @@ class ResourceStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         # main service Lambda
+        _lambda_layer = function_lambda.LayerVersion(
+            self, "Boto3LambdaLayer",
+            code=function_lambda.Code.from_asset('./lambda_code_asset'),
+            compatible_runtimes=[function_lambda.Runtime.PYTHON_3_9]
+        )
+
         function = function_lambda.Function(self,
                                             "SparcBusyBabyService",
                                             function_name="SparcBusyBabyService",
                                             runtime=function_lambda.Runtime.PYTHON_3_9,
+                                            layers=[_lambda_layer],
                                             code=function_lambda.Code.from_asset('./lambda_code_asset'),
                                             handler="service_lambda.main")
 

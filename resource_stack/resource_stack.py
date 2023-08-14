@@ -26,6 +26,7 @@ class ResourceStack(Stack):
 
         # DynamoDB
         daily_record_table = dynamodb.Table(self, "SparcBusyBabyDailyRecord",
+                                            table_name="SparcBusyBabyDailyRecord",
                                             partition_key=dynamodb.Attribute(
                                                 name="baby_id",
                                                 type=dynamodb.AttributeType.STRING
@@ -37,6 +38,7 @@ class ResourceStack(Stack):
                                             )
 
         baby_profile_table = dynamodb.Table(self, "SparcBusyBabyProfile",
+                                            table_name="SparcBusyBabyProfile",
                                             partition_key=dynamodb.Attribute(
                                                 name="baby_id",
                                                 type=dynamodb.AttributeType.STRING

@@ -16,8 +16,8 @@ class ResourceStack(Stack):
                                             "SparcBusyBabyService",
                                             function_name="SparcBusyBabyService",
                                             runtime=function_lambda.Runtime.PYTHON_3_9,
-                                            code=function_lambda.Code.from_asset('./lambda_code_asset'),
-                                            handler="service_lambda.main")
+                                            code=function_lambda.Code.from_asset('./lambda_code_demo'),
+                                            handler="demo_lambda.lambda_handler")
 
         # S3 bucket
         bucket = s3.Bucket(self, "SparcBusyBabyBucket", versioned=True,

@@ -11,6 +11,7 @@ class Growth(BaseModel):
 
 
 class BabyProfile(BaseModel):
+    baby_id: str
     first_name: str
     last_name: str
     gender: str

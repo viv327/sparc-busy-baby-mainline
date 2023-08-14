@@ -3,6 +3,8 @@ import json
 
 def main(event, context):
     print('request: {}'.format(json.dumps(event)))
+
+    action_name = context['action_name']
     return {
         'statusCode': 200,
         'headers': {

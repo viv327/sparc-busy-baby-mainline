@@ -1,7 +1,8 @@
 from aws_cdk import (
     Stack,
     aws_lambda as function_lambda,
-    aws_s3 as s3
+    aws_s3 as s3,
+    aws_dynamodb as dynamodb
 )
 from constructs import Construct
 
@@ -22,3 +23,22 @@ class ResourceStack(Stack):
         bucket = s3.Bucket(self, "SparcBusyBabyBucket", versioned=True,
                            bucket_name="demo-bucket-for-sparc-aws-code-deploy",
                            block_public_access=s3.BlockPublicAccess.BLOCK_ALL)
+
+        # DynamoDB
+        daily_record_table = dynamodb.Table(self, "SparcBusyBabyDailyRecord",
+                                            partition_key=dynamodb.Attribute(
+                                                name="baby_id",
+                                                type=dynamodb.AttributeType.STRING
+                                            ),
+                                            sort_key=dynamodb.Attribute(
+                                                name="record_date",
+                                                type=dynamodb.AttributeType.STRING
+                                            )
+                                            )
+
+        baby_profile_table = dynamodb.Table(self, "SparcBusyBabyProfile",
+                                            partition_key=dynamodb.Attribute(
+                                                name="baby_id",
+                                                type=dynamodb.AttributeType.STRING
+                                            )
+                                            )

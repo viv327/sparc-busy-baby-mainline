@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from typing import List
 
 
@@ -46,6 +46,8 @@ class Medicine(BaseModel):
 
 
 class DailyRecord(BaseModel):
+    baby_id: str
+    record_date: date
     sleep_records: List[SleepRecord]
     bottle_feeds: List[BottleFeed]
     nurse_feeds: List[NurseFeed]
@@ -55,3 +57,7 @@ class DailyRecord(BaseModel):
     baths: List[Bath]
     vaccines: List[Vaccine]
     medicines: List[Medicine]
+
+    @validator("record_date", pre=True)
+    def parse_record_date(self, value):
+        return datetime.strptime(value, "%Y-%m-%d").date()

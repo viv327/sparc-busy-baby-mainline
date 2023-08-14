@@ -2,7 +2,7 @@
 
 import aws_cdk as cdk
 
-from code_pipeline.aws_codepipeline_stack import AwsCodepipelineStack
+from sparc_busy_baby.aws_codepipeline_stack import AwsCodepipelineStack
 
 app = cdk.App()
 AwsCodepipelineStack(app, "SparcBusyBabyMainlineStack",

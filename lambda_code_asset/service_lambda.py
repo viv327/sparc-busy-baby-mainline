@@ -1,6 +1,6 @@
 import json
 
-from lambda_code_asset.persistance.data_utils import create_baby
+from persistance.data_utils import create_baby
 
 
 def dispatch(intent: str, slots: any):

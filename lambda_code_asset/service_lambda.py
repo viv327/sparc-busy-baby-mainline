@@ -1,12 +1,12 @@
 import json
 
 
-def lambda_handler(event, context):
+def main(event, context):
     print('request: {}'.format(json.dumps(event)))
     return {
         'statusCode': 200,
         'headers': {
             'Content-Type': 'text/plain'
         },
-        'body': 'This lambda will be the backend for SparcBusyBaby application'
+        'body': 'This lambda will be the backend service for SparcBusyBaby application'
     }

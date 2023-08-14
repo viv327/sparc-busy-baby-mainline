@@ -14,7 +14,7 @@ class ResourceStack(Stack):
         # main service Lambda
         _lambda_layer = function_lambda.LayerVersion(
             self, "Boto3LambdaLayer",
-            code=function_lambda.Code.from_asset('./lambda_code_asset'),
+            code=function_lambda.Code.from_asset('./lambda_code_asset/layer'),
             compatible_runtimes=[function_lambda.Runtime.PYTHON_3_9]
         )
 

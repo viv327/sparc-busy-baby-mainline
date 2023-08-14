@@ -1,6 +1,6 @@
 import json
 
-from persistance.data_utils import create_baby
+from busy_baby.data_utils import create_baby
 
 
 def dispatch(intent: str, slots: any):

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.site-packages
 
 import aws_cdk as cdk
 

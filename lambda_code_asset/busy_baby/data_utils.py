@@ -1,6 +1,7 @@
 import boto3
 import os
-from constants import BABY_PROFILE_DDB_TABLE
+from .constants import BABY_PROFILE_DDB_TABLE
+from .basic_info import BabyProfile
 
 
 def put_baby(slots: any):

@@ -32,7 +32,7 @@ def put_baby(slots: any):
     # # Generate item
     # # get baby basic info from slots
     # item["DataType"] = "BabyProfile"
-    # item["FirstName"] = slots["FirstName"]["value"]["interpretedValue"]
+    # item["first_name"] = slots["FirstName"]["value"]["interpretedValue"]
     # item["LastName"] = slots["LastName"]["value"]["interpretedValue"]
     # item["Gender"] = slots["Gender"]["value"]["interpretedValue"]
     # item["Birthday"] = slots["Birthday"]["value"]["interpretedValue"]

@@ -1,3 +1,5 @@
+import os
+import subprocess
 from aws_cdk import (
     BundlingOptions,
     Stack,
@@ -19,21 +21,14 @@ class ResourceStack(Stack):
             compatible_runtimes=[aws_lambda.Runtime.PYTHON_3_9]
         )
 
+        _external_dependency_layer = self.create_dependencies_layer("SparcBusyBabyService")
+
         function = aws_lambda.Function(self,
                                        "SparcBusyBabyService",
                                        function_name="SparcBusyBabyService",
                                        runtime=aws_lambda.Runtime.PYTHON_3_9,
-                                       layers=[_lambda_layer],
-                                       code=aws_lambda.Code.from_asset(
-                                           './lambda_code_asset',
-                                           bundling=BundlingOptions(
-                                               image=aws_lambda.Runtime.PYTHON_3_9.bundling_image,
-                                               command=[
-                                                   "bash", "-c",
-                                                   "pip install --no-cache -r requirements.txt -t /asset-output && cp -au . /asset-output"
-                                               ],
-                                           )
-                                       ),
+                                       layers=[_lambda_layer, _external_dependency_layer],
+                                       code=aws_lambda.Code.from_asset('./lambda_code_asset'),
                                        handler="service_lambda.main")
 
         # S3 bucket
@@ -63,3 +58,19 @@ class ResourceStack(Stack):
                                                 )
                                                 )
         baby_profile_table.grant_read_write_data(function.role)
+
+    def create_dependencies_layer(self, function_name):
+        requirements_file = "lambda_code_asset/lambda_dependencies/requirements.txt"
+        output_dir = ".lambda_dependencies/" + function_name
+
+        # Install requirements for layer in the output_dir
+        if not os.environ.get("SKIP_PIP"):
+            # Note: Pip will create the output dir if it does not exist
+            subprocess.check_call(
+                f"pip install -r {requirements_file} -t {output_dir}/python".split()
+            )
+        return aws_lambda.LayerVersion(
+            self,
+            function_name + "-dependencies",
+            code=aws_lambda.Code.from_asset(output_dir)
+        )

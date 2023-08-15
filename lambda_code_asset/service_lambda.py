@@ -18,6 +18,21 @@ def dispatch(intent: str, slots: any):
     return response
 
 
+def delegate(intent: str, slots: any):
+    return {
+        "sessionState": {
+            "dialogAction": {
+                "type": "Delegate"  # let the bot decide what to do next
+            },
+            "intent": {
+                "name": intent,
+                "slots": slots
+            }
+
+        }
+    }
+
+
 def main(event, context):
     print('request: {}'.format(json.dumps(event)))
 
@@ -28,8 +43,8 @@ def main(event, context):
     print(intent)
     print(slots)
 
-    # if event['invocationSource'] == 'DialogCodeHook':
-    #     response = delegate(intent, slots)
+    if event['invocationSource'] == 'DialogCodeHook':
+        response = delegate(intent, slots)
 
     if event["invocationSource"] == "FulfillmentCodeHook":
         response = dispatch(intent, slots)

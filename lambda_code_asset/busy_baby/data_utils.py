@@ -1,5 +1,6 @@
 import boto3
 import os
+import uuid
 from .constants import BABY_PROFILE_DDB_TABLE
 from .basic_info import BabyProfile
 
@@ -9,28 +10,33 @@ def put_baby(slots: any):
     dynamodb = boto3.resource("dynamodb")
     table_name = BABY_PROFILE_DDB_TABLE
     table = dynamodb.Table(table_name)
-    user = os.environ["USER_NAME"]
 
     # # Check if user exists
     # get_response = table.get_item(
     #     Key={
-    #         "baby_id": user,
-    #         "BabyName": slots["FirstName"]["value"]["interpretedValue"]
+    #         "baby_id": slots["BabyId"]["value"]["interpretedValue"],
     #     }
     # )
-    #
+
     # # if exists, get current user
     # if "Item" in get_response:
     #     item = get_response["Item"]
     # # otherwise create a new item profile
     # else:
+    #     # item = {
+    #     #     "BabyId": slots["BabyId"]["value"]["interpretedValue"]
+    #     # }
     #     item = {
-    #         "User": user,
-    #         "BabyName": slots["FirstName"]["value"]["interpretedValue"]
+    #         "baby_id": str(uuid.uuid4())
     #     }
-    #
-    # # Generate item
-    # # get baby basic info from slots
+
+    item = {"baby_id": str(uuid.uuid4()), "first_name": slots["FirstName"]["value"]["interpretedValue"],
+            "last_name": slots["LastName"]["value"]["interpretedValue"],
+            "gender": slots["Gender"]["value"]["interpretedValue"],
+            "birthday": slots["Birthday"]["value"]["interpretedValue"]}
+
+    # Generate item
+    # get baby basic info from slots
     # item["DataType"] = "BabyProfile"
     # item["first_name"] = slots["FirstName"]["value"]["interpretedValue"]
     # item["LastName"] = slots["LastName"]["value"]["interpretedValue"]
@@ -40,6 +46,9 @@ def put_baby(slots: any):
     #
     # # Add item to database
     # table.put_item(Item=item)
+
+    # Add item to database
+    table.put_item(Item=item)
 
     print("Dummy: success!")
 

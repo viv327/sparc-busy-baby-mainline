@@ -69,15 +69,15 @@ class BabyProfileDDBItem(BaseModel):
 
 class DailyRecordDDBItem(BaseModel):
     baby_id: str = Field(alias=DailyRecordDDBItemAttrs.BABY_ID)
-    sleep_records: str = Field(alias=DailyRecordDDBItemAttrs.SLEEP_RECORDS)
-    bottle_feeds: str = Field(alias=DailyRecordDDBItemAttrs.BOTTLE_FEEDS)
-    nurse_feeds: str = Field(alias=DailyRecordDDBItemAttrs.NURSE_FEEDS)
-    solid_foods: str = Field(alias=DailyRecordDDBItemAttrs.SOLID_FOODS)
-    diaper_pees: str = Field(alias=DailyRecordDDBItemAttrs.DIAPER_PEES)
-    diaper_poos: str = Field(alias=DailyRecordDDBItemAttrs.DIAPER_POOS)
-    baths: str = Field(alias=DailyRecordDDBItemAttrs.BATHS)
-    vaccines: str = Field(alias=DailyRecordDDBItemAttrs.VACCINES)
-    medicines: str = Field(alias=DailyRecordDDBItemAttrs.MEDICINES)
+    sleep_records: list = Field(alias=DailyRecordDDBItemAttrs.SLEEP_RECORDS)
+    bottle_feeds: list = Field(alias=DailyRecordDDBItemAttrs.BOTTLE_FEEDS)
+    nurse_feeds: list = Field(alias=DailyRecordDDBItemAttrs.NURSE_FEEDS)
+    solid_foods: list = Field(alias=DailyRecordDDBItemAttrs.SOLID_FOODS)
+    diaper_pees: list = Field(alias=DailyRecordDDBItemAttrs.DIAPER_PEES)
+    diaper_poos: list = Field(alias=DailyRecordDDBItemAttrs.DIAPER_POOS)
+    baths: list = Field(alias=DailyRecordDDBItemAttrs.BATHS)
+    vaccines: list = Field(alias=DailyRecordDDBItemAttrs.VACCINES)
+    medicines: list = Field(alias=DailyRecordDDBItemAttrs.MEDICINES)
 
     def to_entity(self):
         return DailyRecord(

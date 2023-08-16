@@ -1,5 +1,7 @@
 import os
 import subprocess
+
+import aws_cdk
 from aws_cdk import (
     BundlingOptions,
     Stack,
@@ -29,7 +31,8 @@ class ResourceStack(Stack):
                                        runtime=aws_lambda.Runtime.PYTHON_3_9,
                                        layers=[_lambda_layer, _external_dependency_layer],
                                        code=aws_lambda.Code.from_asset('./lambda_code_asset'),
-                                       handler="service_lambda.main")
+                                       handler="service_lambda.main",
+                                       timeout=aws_cdk.Duration.minutes(1))
 
         # S3 bucket
         bucket = aws_s3.Bucket(self, "SparcBusyBabyBucket", versioned=True,

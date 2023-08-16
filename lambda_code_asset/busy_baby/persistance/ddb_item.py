@@ -40,7 +40,7 @@ class BabyProfileDDBItem(BaseModel):
     last_name: str = Field(alias=BabyProfileDDBItemAttrs.LAST_NAME)
     gender: str = Field(alias=BabyProfileDDBItemAttrs.GENDER)
     birthday: str = Field(alias=BabyProfileDDBItemAttrs.BIRTHDAY)
-    growth_record: str = Field(alias=BabyProfileDDBItemAttrs.GROWTH_RECORD)
+    growth_record: list = Field(alias=BabyProfileDDBItemAttrs.GROWTH_RECORD)
 
     def to_entity(self):
         return BabyProfile(

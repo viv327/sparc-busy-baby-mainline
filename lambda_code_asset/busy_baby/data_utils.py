@@ -12,8 +12,6 @@ daily_record_table = dynamodb.Table(DAILY_RECORD_DDB_TABLE)
 
 
 def create_baby(first_name, last_name, gender, birthday):
-    # Create a DynamoDB client
-
 
     # Create BabyProfile object
     baby_profile = BabyProfile(

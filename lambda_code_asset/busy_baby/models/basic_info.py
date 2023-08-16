@@ -16,4 +16,4 @@ class BabyProfile(BaseModel):
     last_name: str
     gender: str
     birthday: str
-    growth_record: List[Growth] = []
+    growth_record: Optional[List[Growth]] = []

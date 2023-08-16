@@ -19,7 +19,7 @@ def dispatch(intent: str, slots: any):
         message = "Baby profile creation result: {}".format(result)
 
     if intent == "addGrowthRecord":
-        record_datetime = datetime.utcnow()
+        record_datetime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
 
         if "Height" in slots and "value" in slots["Height"]:
             height = slots["Height"]["value"]["interpretedValue"]

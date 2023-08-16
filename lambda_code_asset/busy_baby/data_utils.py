@@ -46,20 +46,19 @@ def add_growth_record(baby_id, record_datetime, height, weight, head_circumferen
             weight=weight,
             head_circumference=head_circumference
         )
-        update_expression = f"set {BabyProfileDDBItemAttrs.GROWTH_RECORD.ddb_attr}"
-        expression_attr_values = {
-            ':baby_id': baby_id,
-            ':growth_record': [growth_record.dict()]
-        }
 
-        baby_profile_table.update_item(
+        result = baby_profile_table.update_item(
             Key={
-                BabyProfileDDBItemAttrs.BABY_ID.ddb_attr: baby_id
+                "baby_id": baby_id
             },
-            UpdateExpression=update_expression,
-            ConditionExpression="baby_id = :baby_id",
-            ExpressionAttributeValues=expression_attr_values
+            UpdateExpression="set growth_record = list_append(growth_record, :i)",
+            ExpressionAttributeValues={
+                ':i': [growth_record.dict()]
+            },
+            ReturnValues="UPDATED_NEW"
         )
+
+        logger.info(result)
 
         return "Success"
     except Exception as e:

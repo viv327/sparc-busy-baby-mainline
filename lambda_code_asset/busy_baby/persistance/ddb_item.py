@@ -7,7 +7,7 @@ from ..models.daily_record import DailyRecord
 
 
 class BabyProfileDDBItemAttrs(Enum):
-    BABY_ID = "baby_id" # partition key
+    BABY_ID = "baby_id"  # partition key
     FIRST_NAME = "first_name"
     LAST_NAME = "last_name"
     GENDER = "gender"
@@ -19,8 +19,8 @@ class BabyProfileDDBItemAttrs(Enum):
 
 
 class DailyRecordDDBItemAttrs(Enum):
-    BABY_ID = "baby_id" # partition key
-    RECORD_DATE = "record_date" # sort key
+    BABY_ID = "baby_id"  # partition key
+    RECORD_DATE = "record_date"  # sort key
     SLEEP_RECORDS = "sleep_records"
     BOTTLE_FEEDS = "bottle_feeds"
     NURSE_FEEDS = "nurse_feeds"

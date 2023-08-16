@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class Growth(BaseModel):
-    record_datetime: datetime
+    record_datetime: str
     height: Optional[float]
     weight: Optional[float]
     head_circumference: Optional[float]

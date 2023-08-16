@@ -5,35 +5,35 @@ from typing import List, Optional
 
 
 class SleepRecord(BaseModel):
-    start_time: datetime
-    end_time: datetime
+    start_time: str
+    end_time: str
 
 
 class BottleFeed(BaseModel):
-    time: datetime
+    time: str
     volume: int
 
 
 class NurseFeed(BaseModel):
-    start_time: datetime
-    end_time: datetime
+    start_time: str
+    end_time: str
 
 
 class SolidFood(BaseModel):
-    time: datetime
+    time: str
     type: str
 
 
 class DiaperPee(BaseModel):
-    time: datetime
+    time: str
 
 
 class DiaperPoo(BaseModel):
-    time: datetime
+    time: str
 
 
 class Bath(BaseModel):
-    time: datetime
+    time: str
 
 
 class Vaccine(BaseModel):
@@ -41,7 +41,7 @@ class Vaccine(BaseModel):
 
 
 class Medicine(BaseModel):
-    time: datetime
+    time: str
     type: Optional[str]
 
 

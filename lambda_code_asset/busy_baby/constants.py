@@ -1,2 +1,3 @@
 
+DEMO_BABY_ID = "001"
 BABY_PROFILE_DDB_TABLE = 'SparcBusyBabyProfile'

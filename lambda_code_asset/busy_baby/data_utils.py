@@ -1,7 +1,7 @@
 import boto3
 import os
 import uuid
-from .constants import BABY_PROFILE_DDB_TABLE
+from .constants import BABY_PROFILE_DDB_TABLE, DEMO_BABY_ID
 from .basic_info import BabyProfile
 
 
@@ -11,41 +11,26 @@ def put_baby(slots: any):
     table_name = BABY_PROFILE_DDB_TABLE
     table = dynamodb.Table(table_name)
 
-    # # Check if user exists
-    # get_response = table.get_item(
-    #     Key={
-    #         "baby_id": slots["BabyId"]["value"]["interpretedValue"],
-    #     }
-    # )
+    # Check if user exists
+    get_response = table.get_item(
+        Key={
+            "baby_id": DEMO_BABY_ID
+        }
+    )
 
-    # # if exists, get current user
-    # if "Item" in get_response:
-    #     item = get_response["Item"]
-    # # otherwise create a new item profile
-    # else:
-    #     # item = {
-    #     #     "BabyId": slots["BabyId"]["value"]["interpretedValue"]
-    #     # }
-    #     item = {
-    #         "baby_id": str(uuid.uuid4())
-    #     }
+    # if exists, get current user
+    if "Item" in get_response:
+        item = get_response["Item"]
+    # otherwise create a new item profile
+    else:
+        item = {
+            "baby_id": DEMO_BABY_ID
+        }
 
-    item = {"baby_id": str(uuid.uuid4()), "first_name": slots["FirstName"]["value"]["interpretedValue"],
+    item.update({"first_name": slots["FirstName"]["value"]["interpretedValue"],
             "last_name": slots["LastName"]["value"]["interpretedValue"],
             "gender": slots["Gender"]["value"]["interpretedValue"],
-            "birthday": slots["Birthday"]["value"]["interpretedValue"]}
-
-    # Generate item
-    # get baby basic info from slots
-    # item["DataType"] = "BabyProfile"
-    # item["first_name"] = slots["FirstName"]["value"]["interpretedValue"]
-    # item["LastName"] = slots["LastName"]["value"]["interpretedValue"]
-    # item["Gender"] = slots["Gender"]["value"]["interpretedValue"]
-    # item["Birthday"] = slots["Birthday"]["value"]["interpretedValue"]
-    # item["DeliveryTime"] = slots["DeliveryTime"]["value"]["interpretedValue"]
-    #
-    # # Add item to database
-    # table.put_item(Item=item)
+            "birthday": slots["Birthday"]["value"]["interpretedValue"]})
 
     # Add item to database
     table.put_item(Item=item)

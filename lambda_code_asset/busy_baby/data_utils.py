@@ -4,8 +4,7 @@ import uuid
 from .constants import BABY_PROFILE_DDB_TABLE, DAILY_RECORD_DDB_TABLE, DEMO_BABY_ID
 from .models.basic_info import BabyProfile
 from .models.daily_record import DailyRecord
-from .persistance.ddb_item import BabyProfileDDBItem, DailyRecord
-
+from .persistance.ddb_item import BabyProfileDDBItem, DailyRecordDDBItem
 
 dynamodb = boto3.resource("dynamodb")
 baby_profile_table = dynamodb.Table(BABY_PROFILE_DDB_TABLE)

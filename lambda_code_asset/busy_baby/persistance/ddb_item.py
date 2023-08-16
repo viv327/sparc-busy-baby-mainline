@@ -5,7 +5,6 @@ from pydantic import BaseModel, Field
 from .models.basic_info import BabyProfile
 from .models.daily_record import DailyRecord
 
-
 class BabyProfileDDBItemAttrs(Enum):
     BABY_ID = "baby_id" # partition key
     FIRST_NAME = "first_name"

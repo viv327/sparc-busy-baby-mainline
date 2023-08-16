@@ -59,5 +59,5 @@ class DailyRecord(BaseModel):
     medicines: Optional[List[Medicine]] = []
 
     @validator("record_date", pre=True)
-    def parse_record_date(self, value):
+    def parse_record_date(cls, value):
         return datetime.strptime(value, "%Y-%m-%d").date()

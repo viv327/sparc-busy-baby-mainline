@@ -1,7 +1,7 @@
 from datetime import datetime, date
 
 from pydantic import BaseModel, validator
-from typing import List
+from typing import List, Optional
 
 
 class SleepRecord(BaseModel):

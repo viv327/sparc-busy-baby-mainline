@@ -48,15 +48,15 @@ class Medicine(BaseModel):
 class DailyRecord(BaseModel):
     baby_id: str
     record_date: date
-    sleep_records: List[SleepRecord]
-    bottle_feeds: List[BottleFeed]
-    nurse_feeds: List[NurseFeed]
-    solid_foods: List[SolidFood]
-    diaper_pees: List[DiaperPee]
-    diaper_poos: List[DiaperPoo]
-    baths: List[Bath]
-    vaccines: List[Vaccine]
-    medicines: List[Medicine]
+    sleep_records: List[SleepRecord] = []
+    bottle_feeds: List[BottleFeed] = []
+    nurse_feeds: List[NurseFeed] = []
+    solid_foods: List[SolidFood] = []
+    diaper_pees: List[DiaperPee] = []
+    diaper_poos: List[DiaperPoo] = []
+    baths: List[Bath] = []
+    vaccines: List[Vaccine] = []
+    medicines: List[Medicine] = []
 
     @validator("record_date", pre=True)
     def parse_record_date(self, value):

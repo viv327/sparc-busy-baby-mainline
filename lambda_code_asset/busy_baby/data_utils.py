@@ -1,64 +1,37 @@
 import boto3
 import os
 import uuid
-from .constants import BABY_PROFILE_DDB_TABLE, DEMO_BABY_ID
+from .constants import BABY_PROFILE_DDB_TABLE, DAILY_RECORD_DDB_TABLE, DEMO_BABY_ID
 from .models.basic_info import BabyProfile
+from .models.daily_record import DailyRecord
+from .persistance.ddb_item import BabyProfileDDBItem, DailyRecord
 
-def put_baby(slots: any):
+
+dynamodb = boto3.resource("dynamodb")
+baby_profile_table = dynamodb.Table(BABY_PROFILE_DDB_TABLE)
+daily_record_table = dynamodb.Table(DAILY_RECORD_DDB_TABLE)
+
+
+def create_baby(first_name, last_name, gender, birthday):
     # Create a DynamoDB client
-    dynamodb = boto3.resource("dynamodb")
-    table_name = BABY_PROFILE_DDB_TABLE
-    table = dynamodb.Table(table_name)
 
-    # Check if user exists
-    get_response = table.get_item(
-        Key={
-            "baby_id": DEMO_BABY_ID
-        }
+
+    # Create BabyProfile object
+    baby_profile = BabyProfile(
+        baby_id=DEMO_BABY_ID,
+        first_name=first_name,
+        last_name=last_name,
+        gender=gender,
+        birthday=birthday
     )
 
-    # if exists, get current user
-    if "Item" in get_response:
-        item = get_response["Item"]
-    # otherwise create a new item profile
-    else:
-        item = {
-            "baby_id": DEMO_BABY_ID
-        }
-
-    item.update({"first_name": slots["FirstName"]["value"]["interpretedValue"],
-            "last_name": slots["LastName"]["value"]["interpretedValue"],
-            "gender": slots["Gender"]["value"]["interpretedValue"],
-            "birthday": slots["Birthday"]["value"]["interpretedValue"]})
+    # Convert to DDB item
+    baby_profile_ddb_item = BabyProfileDDBItem.from_entity(baby_profile)
 
     # Add item to database
-    table.put_item(Item=item)
+    baby_profile_table.put_item(Item=baby_profile_ddb_item.to_ddb())
 
     print("Dummy: success!")
 
-
-def create_baby(intent: str, slots: any):
-    # Add data to dynamoDB
-    put_baby(slots)
-
-    # Generate response
-    response = {
-        "sessionState": {
-            "dialogAction": {
-                "type": "Close"
-            },
-            "intent": {
-                "name": intent,
-                "slots": slots,
-                "state": "Fulfilled"
-            }
-        },
-        "messages": [
-            {
-                "contentType": "PlainText",
-                "content": "Howray! FulfillmentCodeHook!"
-            }
-        ]
-    }
-
-    return response
+    # return "(calculated result based on DDB query, e.g,  milk intake volume)"
+    return "Success"

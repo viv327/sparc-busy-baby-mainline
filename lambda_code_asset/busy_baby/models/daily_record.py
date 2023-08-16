@@ -42,7 +42,7 @@ class Vaccine(BaseModel):
 
 class Medicine(BaseModel):
     time: datetime
-    type: str
+    type: Optional[str]
 
 
 class DailyRecord(BaseModel):

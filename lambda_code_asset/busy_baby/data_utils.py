@@ -2,8 +2,7 @@ import boto3
 import os
 import uuid
 from .constants import BABY_PROFILE_DDB_TABLE, DEMO_BABY_ID
-from .basic_info import BabyProfile
-
+from .models.basic_info import BabyProfile
 
 def put_baby(slots: any):
     # Create a DynamoDB client

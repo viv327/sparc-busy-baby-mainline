@@ -1,13 +1,13 @@
 from typing import Optional, List
 from pydantic import BaseModel
-from datetime import datetime
+from decimal import Decimal
 
 
 class Growth(BaseModel):
     record_datetime: str
-    height: Optional[float]
-    weight: Optional[float]
-    head_circumference: Optional[float]
+    height: Optional[str]
+    weight: Optional[str]
+    head_circumference: Optional[str]
 
 
 class BabyProfile(BaseModel):

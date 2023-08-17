@@ -64,43 +64,50 @@ def dispatch(intent: str, slots: any):
 
     '''
     - createBaby(first_name, last_name, gender, birthday)x
-    - addGrowthRecord
-    - addSleepRecord
-    - addBottleFeed(baby_id, datetime, volume)
-    - addNurseFeed
-    - addSolidFood
-    - addDiaperPee
-    - addDiaperPoo
-    - addBath
-    - addVaccine
-    - addMedicine
-    - getMostRecentSleepStart
-    - getMostRecentSleepEnd
-    - getMostRecentSleepDuration
-    - getTotalSleepTime
-    - getSleepCount
-    - getMostRecentBottleFeedTime
-    - getMostRecentBottleFeedVolume
-    - getTotalBottleFeedVolume
-    - getTotalBottleFeedCount
-    - getMostRecentNurseFeedEnd
-    - getTotalNurseFeedCount
-    - getMostRecentSolidFoodTime
-    - getMostRecentSolidFoodType
-    - getTotalSolidFoodCount
-    - getAllSolidFoodTypes
-    - getMostRecentDiaperPeeTime
-    - getTotalDiaperPeeCount
-    - getMostRecentDiaperPooTime
-    - getTotalDiaperPooCount
-    - getMostRecentBathDay
-    - getMostRecentVaccineDay
-    - getAllVaccineTypes
-    - getMostRecentMedicineTime
-    - getTotalMedicineCount
-    - deleteMostRecentSleepRecord
-    - updateMostRecentSleepRecord
-    - updateMostRecentBottleFeedVolume
+    - addGrowthRecord(baby_id, record_datetime, height, weight, head_circumference)
+    - addVaccineRecord(baby_id, record_datetime, vaccine_type)
+    - addSleepRecord(baby_id, date, start_time, end_time)
+    - addBottleFeed(baby_id, date, bottle_time, volume)
+    - addNurseFeed(baby_id, date, start_time, end_time)
+    - addSolidFood(baby_id, date, food_time, food_type)
+    - addDiaperPee(baby_id, date, pee_time)
+    - addDiaperPoo(baby_id, date, poo_time)
+    - addBath(baby_id, date, bath_time)
+    - addVaccine(baby_id, date, vaccine_type)
+    - addMedicine(baby_id, date, medicine_time, medicine_type)
+    
+    - getMostRecentHeight(baby_id)
+    - getMostRecentWeight(baby_id)
+    - getMostRecentHeadCircumference(baby_id)
+    - getMostRecentVaccineDay(baby_id, date)
+    - getAllVaccineTypes(baby_id, date)
+    - getMostRecentSleepStart(baby_id, date)
+    - getMostRecentSleepEnd(baby_id, date)
+    - getMostRecentSleepDuration(baby_id, date)
+    - getTotalSleepTime(baby_id, date)
+    - getTotalSleepCount(baby_id, date)
+    - getMostRecentBottleFeedTime(baby_id, date)
+    - getMostRecentBottleFeedVolume(baby_id, date)
+    - getTotalBottleFeedVolume(baby_id, date)
+    - getTotalBottleFeedCount(baby_id, date)
+    - getMostRecentNurseFeedEnd(baby_id, date)
+    - getTotalNurseFeedCount(baby_id, date)
+    - getMostRecentSolidFoodTime(baby_id, date)
+    - getMostRecentSolidFoodType(baby_id, date)
+    - getTotalSolidFoodCount(baby_id, date)
+    - getAllSolidFoodTypes(baby_id, date)
+    - getMostRecentDiaperPeeTime(baby_id, date)
+    - getTotalDiaperPeeCount(baby_id, date)
+    - getMostRecentDiaperPooTime(baby_id, date)
+    - getTotalDiaperPooCount(baby_id, date)
+    - getMostRecentBathTime(baby_id, date)
+    - getMostRecentMedicineTime(baby_id, date)
+    - getTotalMedicineCount(baby_id, date)
+    
+    - deleteMostRecentSleepRecord(baby_id)
+    - updateMostRecentSleepStartRecord(baby_id, start_time)**********
+    - updateMostRecentSleepEndRecord(baby_id, end_time)**********
+    - updateMostRecentBottleFeed(baby_id, volume, bottle_time)
     
     
     '''

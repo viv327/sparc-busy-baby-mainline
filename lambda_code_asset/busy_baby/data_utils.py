@@ -3,7 +3,7 @@ import logging
 import os
 import uuid
 from .constants import BABY_PROFILE_DDB_TABLE, DAILY_RECORD_DDB_TABLE, DEMO_BABY_ID
-from .models.basic_info import Growth, BabyProfile
+from .models.basic_info import Growth, BabyProfile, Vaccine
 from .models.daily_record import DailyRecord
 from .persistance.ddb_item import BabyProfileDDBItemAttrs, BabyProfileDDBItem, DailyRecordDDBItemAttrs, DailyRecordDDBItem
 
@@ -54,6 +54,32 @@ def add_growth_record(baby_id, record_datetime, height, weight, head_circumferen
             UpdateExpression="set growth_record = list_append(growth_record, :i)",
             ExpressionAttributeValues={
                 ':i': [growth_record.dict()]
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+
+        logger.info(result)
+
+        return "Success"
+    except Exception as e:
+        logger.error("Failed to update baby profile")
+        raise e
+
+
+def add_vaccine_record(baby_id, record_datetime, vaccine_type):
+    try:
+        vaccine_record = Vaccine(
+            record_datetime=record_datetime,
+            vaccine_type=vaccine_type,
+        )
+
+        result = baby_profile_table.update_item(
+            Key={
+                "baby_id": baby_id
+            },
+            UpdateExpression="set vaccine_record = list_append(vaccine_record, :i)",
+            ExpressionAttributeValues={
+                ':i': [vaccine_record.dict()]
             },
             ReturnValues="UPDATED_NEW"
         )

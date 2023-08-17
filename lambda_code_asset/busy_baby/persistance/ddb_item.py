@@ -13,6 +13,7 @@ class BabyProfileDDBItemAttrs(Enum):
     GENDER = "gender"
     BIRTHDAY = "birthday"
     GROWTH_RECORD = "growth_record"
+    VACCINE_RECORD = "vaccine_record"
 
     def __init__(self, ddb_attr):
         self.ddb_attr = ddb_attr
@@ -28,7 +29,6 @@ class DailyRecordDDBItemAttrs(Enum):
     DIAPER_PEES = "diaper_pees"
     DIAPER_POOS = "diaper_poos"
     BATHS = "baths"
-    VACCINES = "vaccines"
     MEDICINES = "medicines"
 
     def __init__(self, ddb_attr):
@@ -42,6 +42,7 @@ class BabyProfileDDBItem(BaseModel):
     gender: str = Field(alias=BabyProfileDDBItemAttrs.GENDER.ddb_attr)
     birthday: str = Field(alias=BabyProfileDDBItemAttrs.BIRTHDAY.ddb_attr)
     growth_record: list = Field(alias=BabyProfileDDBItemAttrs.GROWTH_RECORD.ddb_attr)
+    vaccine_record: list = Field(alias=BabyProfileDDBItemAttrs.VACCINE_RECORD.ddb_attr)
 
     def to_entity(self):
         return BabyProfile(
@@ -50,7 +51,8 @@ class BabyProfileDDBItem(BaseModel):
             last_name=self.last_name,
             gender=self.gender,
             birthday=self.birthday,
-            growth_record=self.growth_record
+            growth_record=self.growth_record,
+            vaccine_record=self.vaccine_record
         )
 
     @staticmethod
@@ -61,7 +63,8 @@ class BabyProfileDDBItem(BaseModel):
             last_name=baby_profile.last_name,
             gender=baby_profile.gender,
             birthday=baby_profile.birthday,
-            growth_record=baby_profile.growth_record
+            growth_record=baby_profile.growth_record,
+            vaccine_record = baby_profile.vaccine_record
         )
 
     def to_ddb(self):
@@ -77,7 +80,6 @@ class DailyRecordDDBItem(BaseModel):
     diaper_pees: list = Field(alias=DailyRecordDDBItemAttrs.DIAPER_PEES.ddb_attr)
     diaper_poos: list = Field(alias=DailyRecordDDBItemAttrs.DIAPER_POOS.ddb_attr)
     baths: list = Field(alias=DailyRecordDDBItemAttrs.BATHS.ddb_attr)
-    vaccines: list = Field(alias=DailyRecordDDBItemAttrs.VACCINES.ddb_attr)
     medicines: list = Field(alias=DailyRecordDDBItemAttrs.MEDICINES.ddb_attr)
 
     def to_entity(self):
@@ -90,7 +92,6 @@ class DailyRecordDDBItem(BaseModel):
             diaper_pees=self.diaper_pees,
             diaper_poos=self.diaper_poos,
             baths=self.baths,
-            vaccines=self.vaccines,
             medicines=self.medicines
         )
 
@@ -105,7 +106,6 @@ class DailyRecordDDBItem(BaseModel):
             diaper_pees=daily_record.diaper_pees,
             diaper_poos=daily_record.diaper_poos,
             baths=daily_record.baths,
-            vaccines=daily_record.vaccines,
             medicines=daily_record.medicines
         )
 

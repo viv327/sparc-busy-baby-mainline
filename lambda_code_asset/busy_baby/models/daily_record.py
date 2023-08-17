@@ -36,10 +36,6 @@ class Bath(BaseModel):
     time: str
 
 
-class Vaccine(BaseModel):
-    type: str
-
-
 class Medicine(BaseModel):
     time: str
     type: Optional[str]
@@ -55,7 +51,6 @@ class DailyRecord(BaseModel):
     diaper_pees: Optional[List[DiaperPee]] = []
     diaper_poos: Optional[List[DiaperPoo]] = []
     baths: Optional[List[Bath]] = []
-    vaccines: Optional[List[Vaccine]] = []
     medicines: Optional[List[Medicine]] = []
 
     @validator("record_date", pre=True)

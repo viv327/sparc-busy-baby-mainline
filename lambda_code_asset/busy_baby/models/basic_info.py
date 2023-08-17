@@ -10,6 +10,11 @@ class Growth(BaseModel):
     head_circumference: Optional[str]
 
 
+class Vaccine(BaseModel):
+    record_datetime: str
+    vaccine_type: str
+
+
 class BabyProfile(BaseModel):
     baby_id: str
     first_name: str
@@ -17,3 +22,4 @@ class BabyProfile(BaseModel):
     gender: str
     birthday: str
     growth_record: Optional[List[Growth]] = []
+    vaccine_record: Optional[List[Vaccine]] = []

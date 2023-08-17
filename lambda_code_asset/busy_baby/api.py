@@ -4,6 +4,7 @@ import os
 import uuid
 from .constants import BABY_PROFILE_DDB_TABLE, DAILY_RECORD_DDB_TABLE, DEMO_BABY_ID
 from .models.basic_info import Growth, BabyProfile, Vaccine
+from .models.daily_record import BottleFeed
 from .models.daily_record import DailyRecord
 from .persistance.ddb_item import BabyProfileDDBItemAttrs, BabyProfileDDBItem, DailyRecordDDBItemAttrs, DailyRecordDDBItem
 
@@ -78,9 +79,10 @@ def add_vaccine_record(baby_id, record_datetime, vaccine_type):
             Key={
                 "baby_id": baby_id
             },
-            UpdateExpression="set vaccine_record = list_append(vaccine_record, :i)",
+            UpdateExpression="set vaccine_record = list_append(if_not_exists(vaccine_record, :empty_list), :i)",
             ExpressionAttributeValues={
-                ':i': [vaccine_record.dict()]
+                ':i': [vaccine_record.dict()],
+                ':empty_list': []
             },
             ReturnValues="UPDATED_NEW"
         )
@@ -90,4 +92,32 @@ def add_vaccine_record(baby_id, record_datetime, vaccine_type):
         return "Success"
     except Exception as e:
         logger.error("Failed to update baby profile")
+        raise e
+
+
+def add_bottle_feed(baby_id, date, time, volume):
+    try:
+        bottle_feeds = BottleFeed(
+            time=time,
+            volume=volume,
+        )
+
+        result = daily_record_table.update_item(
+            Key={
+                "baby_id": baby_id,
+                "record_date": date
+            },
+            UpdateExpression="set bottle_feeds = list_append(if_not_exists(bottle_feeds, :empty_list), :i)",
+            ExpressionAttributeValues={
+                ':i': [bottle_feeds.dict()],
+                ':empty_list': []
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+
+        logger.info(result)
+
+        return "Success"
+    except Exception as e:
+        logger.error("Failed to add bottle feed")
         raise e

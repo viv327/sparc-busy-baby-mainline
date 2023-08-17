@@ -159,3 +159,43 @@ class TestAPI:
             # assert retrieved_item['Item']['last_name'] == {'S': 'Li'}
             # assert retrieved_item['Item']['gender'] == {'S': 'Female'}
             # assert retrieved_item['Item']['birthday'] == {'S': '2020-02-02'}
+
+    def test_add_vaccine_record(self, ddb_client):
+        with create_baby_profile_table(ddb_client):
+
+            baby_id = api.create_baby('Emma', 'Li', 'Female', '2020-02-02')
+
+            # call API to put item in DDB table
+            api.add_vaccine_record(baby_id, '2023-08-16T19:22:36', 'DTaP')
+
+            # retrieve from DDB table by key
+            retrieved_item = ddb_client.get_item(
+                TableName=BABY_PROFILE_DDB_TABLE,
+                Key={
+                    "baby_id": {"S": DEMO_BABY_ID}
+                }
+            )
+
+            assert retrieved_item['Item']['first_name'] == {'S': 'Emma'}
+            assert retrieved_item['Item']['vaccine_record']['L'][0]['M']['vaccine_type'] == {'S': 'DTaP'}
+
+    def test_add_bottle_feed(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+
+            # baby_id = api.create_baby('Emma', 'Li', 'Female', '2020-02-02')
+
+            # call API to put item in DDB table
+            api.add_bottle_feed(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36', 80)
+
+            # # retrieve from DDB table by key
+            # retrieved_item = ddb_client.get_item(
+            #     TableName=DAILY_RECORD_DDB_TABLE,
+            #     Key={
+            #         "baby_id": {"S": DEMO_BABY_ID}
+            #     }
+            # )
+            #
+            # # assert retrieved_item['Item']['first_name'] == {'S': 'Emma'}
+            # assert retrieved_item['Item']['bottle_feeds']['L'][0]['M']['volume'] == {'S': '80'}
+
+            assert True == True

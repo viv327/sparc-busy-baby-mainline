@@ -5,8 +5,8 @@ from typing import List, Optional
 
 
 class SleepRecord(BaseModel):
-    start_time: str
-    end_time: str
+    start_time: Optional[str]
+    end_time: Optional[str]
 
 
 class BottleFeed(BaseModel):
@@ -15,8 +15,8 @@ class BottleFeed(BaseModel):
 
 
 class NurseFeed(BaseModel):
-    start_time: str
-    end_time: str
+    start_time: Optional[str]
+    end_time: Optional[str]
 
 
 class SolidFood(BaseModel):

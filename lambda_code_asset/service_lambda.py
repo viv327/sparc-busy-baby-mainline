@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from busy_baby.api import create_baby, add_growth_record, add_vaccine_record
+from busy_baby.api import create_baby, add_growth_record, add_vaccine_record, add_bottle_feed
 from busy_baby.constants import DEMO_BABY_ID
 
 
@@ -24,7 +24,7 @@ def dispatch(intent: str, slots: any):
         if "Height" in slots and "value" in slots["Height"]:
             height = slots["Height"]["value"]["interpretedValue"]
         else:
-            height = None
+            height = None  # because height is optional field, hence can be None if not provided by upstream (e.g, Lex)
 
         if "Weight" in slots and "value" in slots["Weight"]:
             weight = slots["Weight"]["value"]["interpretedValue"]
@@ -40,14 +40,24 @@ def dispatch(intent: str, slots: any):
         message = "Update baby growth record result: {}".format(result)
 
     if intent == "addVaccineRecord":
-        record_datetime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')  # convert current UTC datetime to string
-
-        if "VaccineType" in slots and "value" in slots["VaccineType"]:
-            vaccine_type = slots["VaccineType"]["value"]["interpretedValue"]
-        else:
-            vaccine_type = None
-
+        record_datetime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')  # convert current UTC datetime to strings
+        vaccine_type = slots["VaccineType"]["value"]["interpretedValue"]
         result = add_vaccine_record(DEMO_BABY_ID, record_datetime, vaccine_type)
+        message = "Update baby growth record result: {}".format(result)
+
+    if intent == "addSleepRecord":
+        if "StartTime" in slots and "value" in slots["StartTime"]:
+            start_time = slots["StartTime"]["value"]["interpretedValue"]
+        else:
+            start_time = None
+
+
+    if intent == "addBottleFeed":
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
+        time = slots["Time"]["value"]["interpretedValue"]
+        # time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        volume = slots["Volume"]["value"]["interpretedValue"]
+        result = add_bottle_feed(DEMO_BABY_ID, record_date, time, volume)
         message = "Update baby growth record result: {}".format(result)
 
     # Generate response

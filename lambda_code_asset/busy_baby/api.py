@@ -7,9 +7,9 @@ from .models.basic_info import Growth, BabyProfile, Vaccine
 from .models.daily_record import DailyRecord
 from .persistance.ddb_item import BabyProfileDDBItemAttrs, BabyProfileDDBItem, DailyRecordDDBItemAttrs, DailyRecordDDBItem
 
-dynamodb = boto3.resource("dynamodb")
-baby_profile_table = dynamodb.Table(BABY_PROFILE_DDB_TABLE)
-daily_record_table = dynamodb.Table(DAILY_RECORD_DDB_TABLE)
+dynamodb = boto3.resource("dynamodb")  # create dynamodb client using boto3 API
+baby_profile_table = dynamodb.Table(BABY_PROFILE_DDB_TABLE)  # create dynamodb table handle
+daily_record_table = dynamodb.Table(DAILY_RECORD_DDB_TABLE)  # create dynamodb table handle
 
 
 logger = logging.getLogger(__name__)
@@ -18,8 +18,9 @@ logger = logging.getLogger(__name__)
 def create_baby(first_name, last_name, gender, birthday):
 
     # Create BabyProfile object
+    baby_id = DEMO_BABY_ID  # use dummy ID for demo purpose, should use UUID otherwise
     baby_profile = BabyProfile(
-        baby_id=DEMO_BABY_ID,
+        baby_id=baby_id,
         first_name=first_name,
         last_name=last_name,
         gender=gender,
@@ -35,7 +36,7 @@ def create_baby(first_name, last_name, gender, birthday):
     print("Dummy: success!")
 
     # return "(calculated result based on DDB query, e.g,  milk intake volume)"
-    return "Success"
+    return baby_id
 
 
 def add_growth_record(baby_id, record_datetime, height, weight, head_circumference):

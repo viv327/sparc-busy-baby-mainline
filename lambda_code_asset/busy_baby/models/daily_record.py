@@ -43,7 +43,7 @@ class Medicine(BaseModel):
 
 class DailyRecord(BaseModel):
     baby_id: str
-    record_date: date
+    record_date: str # https://aws.amazon.com/blogs/database/working-with-date-and-timestamp-data-types-in-amazon-dynamodb/
     sleep_records: Optional[List[SleepRecord]] = []
     bottle_feeds: Optional[List[BottleFeed]] = []
     nurse_feeds: Optional[List[NurseFeed]] = []
@@ -53,6 +53,3 @@ class DailyRecord(BaseModel):
     baths: Optional[List[Bath]] = []
     medicines: Optional[List[Medicine]] = []
 
-    @validator("record_date", pre=True)
-    def parse_record_date(cls, value):
-        return datetime.strptime(value, "%Y-%m-%d").date()

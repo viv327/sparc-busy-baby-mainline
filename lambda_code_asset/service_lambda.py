@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from busy_baby.data_utils import create_baby, add_growth_record
+from busy_baby.api import create_baby, add_growth_record, add_vaccine_record
 from busy_baby.constants import DEMO_BABY_ID
 
 
@@ -19,7 +19,7 @@ def dispatch(intent: str, slots: any):
         message = "Baby profile creation result: {}".format(result)
 
     if intent == "addGrowthRecord":
-        record_datetime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        record_datetime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')  # convert current UTC datetime to string
 
         if "Height" in slots and "value" in slots["Height"]:
             height = slots["Height"]["value"]["interpretedValue"]
@@ -39,8 +39,16 @@ def dispatch(intent: str, slots: any):
         result = add_growth_record(DEMO_BABY_ID, record_datetime, height, weight, head_circumference)
         message = "Update baby growth record result: {}".format(result)
 
-    if intent == "createVaccineRecord":
-        result = {}
+    if intent == "addVaccineRecord":
+        record_datetime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')  # convert current UTC datetime to string
+
+        if "VaccineType" in slots and "value" in slots["VaccineType"]:
+            vaccine_type = slots["VaccineType"]["value"]["interpretedValue"]
+        else:
+            vaccine_type = None
+
+        result = add_vaccine_record(DEMO_BABY_ID, record_datetime, vaccine_type)
+        message = "Update baby growth record result: {}".format(result)
 
     # Generate response
     response = {

@@ -228,9 +228,49 @@ def delegate(intent: str, slots: any):
         }
     }
 
+def dispatchTest(intent: str, slots: any):
+    response = {
+        "sessionState": {
+            "dialogAction": {
+                "type": "Close"
+                # "type": "Delegate"
+            },
 
-def main(event, context):
-    print('request: {}'.format(json.dumps(event)))
+            "intent": {
+                "name": intent,
+                "slots": slots,
+                "state": "Fulfilled"
+            }
+        },
+        "messages": [
+            {
+                "contentType": "PlainText",
+                "content": "Howray! FulfillmentCodeHook!"
+            }
+        ]
+    }
+
+    return response
+
+# def main(event, context):
+#     print('request: {}'.format(json.dumps(event)))
+#
+#     intent = event["sessionState"]["intent"]["name"]
+#     slots = event["sessionState"]["intent"]["slots"]
+#
+#     print(event["invocationSource"])
+#     print(intent)
+#     print(slots)
+#
+#     if event['invocationSource'] == 'DialogCodeHook':
+#         response = delegate(intent, slots)
+#
+#     if event["invocationSource"] == "FulfillmentCodeHook":
+#         response = dispatch(intent, slots)
+#
+#     return response
+
+def lambda_handler(event: any, context: any):
 
     intent = event["sessionState"]["intent"]["name"]
     slots = event["sessionState"]["intent"]["slots"]
@@ -243,6 +283,6 @@ def main(event, context):
         response = delegate(intent, slots)
 
     if event["invocationSource"] == "FulfillmentCodeHook":
-        response = dispatch(intent, slots)
+        response = dispatchTest(intent, slots)
 
     return response

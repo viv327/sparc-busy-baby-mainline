@@ -138,7 +138,7 @@ class TestAPI:
             baby_id = api.create_baby('Emma', 'Li', 'Female', '2020-02-02')
 
             # call API to put item in DDB table
-            api.add_growth_record(baby_id, '2023-08-16T19:22:36', '40', '30', '20')
+            api.add_growth_record(baby_id, '2023-08-16', '40', '30', '20')
 
             # retrieve from DDB table by key
             retrieved_item = ddb_client.get_item(
@@ -166,7 +166,7 @@ class TestAPI:
             baby_id = api.create_baby('Emma', 'Li', 'Female', '2020-02-02')
 
             # call API to put item in DDB table
-            api.add_vaccine_record(baby_id, '2023-08-16T19:22:36', 'DTaP')
+            api.add_vaccine_record(baby_id, '2023-08-16', 'DTaP')
 
             # retrieve from DDB table by key
             retrieved_item = ddb_client.get_item(
@@ -177,7 +177,26 @@ class TestAPI:
             )
 
             assert retrieved_item['Item']['first_name'] == {'S': 'Emma'}
+            assert retrieved_item['Item']['vaccine_record']['L'][0]['M']['record_date'] == {'S': '2023-08-16'}
             assert retrieved_item['Item']['vaccine_record']['L'][0]['M']['vaccine_type'] == {'S': 'DTaP'}
+
+    def test_add_sleep_record(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+
+            # call API to put item in DDB table
+            api.add_sleep_record(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36', '2023-08-16T19:52:36')
+
+            # retrieve from DDB table by key
+            retrieved_item = ddb_client.get_item(
+                TableName=DAILY_RECORD_DDB_TABLE,
+                Key={
+                    "baby_id": {"S": DEMO_BABY_ID},
+                    "record_date": {"S": '2020-02-02'}
+                }
+            )
+
+            assert retrieved_item['Item']['sleep_records']['L'][0]['M']['start_time'] == {'S': '2023-08-16T19:22:36'}
+            assert retrieved_item['Item']['sleep_records']['L'][0]['M']['end_time'] == {'S': '2023-08-16T19:52:36'}
 
     def test_add_bottle_feed(self, ddb_client):
         with create_daily_record_table(ddb_client):
@@ -187,15 +206,113 @@ class TestAPI:
             # call API to put item in DDB table
             api.add_bottle_feed(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36', 80)
 
-            # # retrieve from DDB table by key
-            # retrieved_item = ddb_client.get_item(
-            #     TableName=DAILY_RECORD_DDB_TABLE,
-            #     Key={
-            #         "baby_id": {"S": DEMO_BABY_ID}
-            #     }
-            # )
-            #
-            # # assert retrieved_item['Item']['first_name'] == {'S': 'Emma'}
-            # assert retrieved_item['Item']['bottle_feeds']['L'][0]['M']['volume'] == {'S': '80'}
+            # retrieve from DDB table by key
+            retrieved_item = ddb_client.get_item(
+                TableName=DAILY_RECORD_DDB_TABLE,
+                Key={
+                    "baby_id": {"S": DEMO_BABY_ID},
+                    "record_date": {"S": '2020-02-02'}
+                }
+            )
+            assert retrieved_item['Item']['bottle_feeds']['L'][0]['M']['time'] == {'S': '2023-08-16T19:22:36'}
+            assert retrieved_item['Item']['bottle_feeds']['L'][0]['M']['volume'] == {'N': '80'}
 
-            assert True == True
+    def test_add_nurse_feed(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+
+            # call API to put item in DDB table
+            api.add_nurse_feed(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36', '2023-08-16T19:52:36')
+
+            # retrieve from DDB table by key
+            retrieved_item = ddb_client.get_item(
+                TableName=DAILY_RECORD_DDB_TABLE,
+                Key={
+                    "baby_id": {"S": DEMO_BABY_ID},
+                    "record_date": {"S": '2020-02-02'}
+                }
+            )
+
+            assert retrieved_item['Item']['nurse_feeds']['L'][0]['M']['start_time'] == {'S': '2023-08-16T19:22:36'}
+            assert retrieved_item['Item']['nurse_feeds']['L'][0]['M']['end_time'] == {'S': '2023-08-16T19:52:36'}
+
+    def test_add_solid_food(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+
+            # call API to put item in DDB table
+            api.add_solid_food(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36', "banana")
+
+            # retrieve from DDB table by key
+            retrieved_item = ddb_client.get_item(
+                TableName=DAILY_RECORD_DDB_TABLE,
+                Key={
+                    "baby_id": {"S": DEMO_BABY_ID},
+                    "record_date": {"S": '2020-02-02'}
+                }
+            )
+            assert retrieved_item['Item']['solid_foods']['L'][0]['M']['time'] == {'S': '2023-08-16T19:22:36'}
+            assert retrieved_item['Item']['solid_foods']['L'][0]['M']['food_type'] == {'S': 'banana'}
+
+    def test_add_diaper_pee(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+
+            # call API to put item in DDB table
+            api.add_diaper_pee(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36')
+
+            # retrieve from DDB table by key
+            retrieved_item = ddb_client.get_item(
+                TableName=DAILY_RECORD_DDB_TABLE,
+                Key={
+                    "baby_id": {"S": DEMO_BABY_ID},
+                    "record_date": {"S": '2020-02-02'}
+                }
+            )
+            assert retrieved_item['Item']['diaper_pees']['L'][0]['M']['time'] == {'S': '2023-08-16T19:22:36'}
+
+    def test_add_diaper_poo(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+
+            # call API to put item in DDB table
+            api.add_diaper_poo(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36')
+
+            # retrieve from DDB table by key
+            retrieved_item = ddb_client.get_item(
+                TableName=DAILY_RECORD_DDB_TABLE,
+                Key={
+                    "baby_id": {"S": DEMO_BABY_ID},
+                    "record_date": {"S": '2020-02-02'}
+                }
+            )
+            assert retrieved_item['Item']['diaper_poos']['L'][0]['M']['time'] == {'S': '2023-08-16T19:22:36'}
+
+    def test_add_bath(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+
+            # call API to put item in DDB table
+            api.add_bath(DEMO_BABY_ID, '2020-02-02', '2023-08-17T19:22:36')
+
+            # retrieve from DDB table by key
+            retrieved_item = ddb_client.get_item(
+                TableName=DAILY_RECORD_DDB_TABLE,
+                Key={
+                    "baby_id": {"S": DEMO_BABY_ID},
+                    "record_date": {"S": '2020-02-02'}
+                }
+            )
+            assert retrieved_item['Item']['baths']['L'][0]['M']['time'] == {'S': '2023-08-17T19:22:36'}
+
+    def test_add_medicine(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+
+            # call API to put item in DDB table
+            api.add_medicine(DEMO_BABY_ID, '2020-02-02', '2023-08-17T19:22:36', 'Tylenol')
+
+            # retrieve from DDB table by key
+            retrieved_item = ddb_client.get_item(
+                TableName=DAILY_RECORD_DDB_TABLE,
+                Key={
+                    "baby_id": {"S": DEMO_BABY_ID},
+                    "record_date": {"S": '2020-02-02'}
+                }
+            )
+            assert retrieved_item['Item']['medicines']['L'][0]['M']['time'] == {'S': '2023-08-17T19:22:36'}
+            assert retrieved_item['Item']['medicines']['L'][0]['M']['med_type'] == {'S': 'Tylenol'}

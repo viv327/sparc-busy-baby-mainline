@@ -21,7 +21,7 @@ class NurseFeed(BaseModel):
 
 class SolidFood(BaseModel):
     time: str
-    type: str
+    food_type: str
 
 
 class DiaperPee(BaseModel):
@@ -38,7 +38,7 @@ class Bath(BaseModel):
 
 class Medicine(BaseModel):
     time: str
-    type: Optional[str]
+    med_type: Optional[str]
 
 
 class DailyRecord(BaseModel):

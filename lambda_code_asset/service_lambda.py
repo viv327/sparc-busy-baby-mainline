@@ -1,7 +1,9 @@
 import json
 from datetime import datetime
-from busy_baby.api import create_baby, add_growth_record, add_vaccine_record, add_bottle_feed
-from lambda_code_asset.busy_baby.constants import CREATE_BABY_INTENT, FIRST_NAME, LAST_NAME, GENDER, BIRTHDAY
+
+from busy_baby.api import create_baby, add_growth_record, add_vaccine_record, add_bottle_feed, add_sleep_record, \
+    add_nurse_feed, add_solid_food, add_diaper_pee, add_diaper_poo, add_bath, add_medicine
+from busy_baby.constants import DEMO_BABY_ID, CREATE_BABY_INTENT, FIRST_NAME, LAST_NAME, GENDER, BIRTHDAY
 
 
 def dispatch(intent: str, slots: any):
@@ -21,12 +23,13 @@ def dispatch(intent: str, slots: any):
         gender = slots[GENDER]["value"]["interpretedValue"]
         birthday = slots[BIRTHDAY]["value"]["interpretedValue"]
 
-
         result = create_baby(first_name, last_name, gender, birthday)
         message = "Baby profile creation result: {}".format(result)
 
     if intent == "addGrowthRecord":
-        record_datetime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')  # convert current UTC datetime to string
+        record_date = slots["RecordDate"]["value"]["interpretedValue"]
+        if record_date == "today":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d')  # convert current UTC date to strings
 
         if "Height" in slots and "value" in slots["Height"]:
             height = slots["Height"]["value"]["interpretedValue"]
@@ -43,29 +46,101 @@ def dispatch(intent: str, slots: any):
         else:
             head_circumference = None
 
-        result = add_growth_record(DEMO_BABY_ID, record_datetime, height, weight, head_circumference)
+        result = add_growth_record(DEMO_BABY_ID, record_date, height, weight, head_circumference)
         message = "Update baby growth record result: {}".format(result)
 
     if intent == "addVaccineRecord":
-        record_datetime = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')  # convert current UTC datetime to strings
+        record_date = slots["RecordDate"]["value"]["interpretedValue"]
+        if record_date == "today":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d')  # convert current UTC date to strings
+
         vaccine_type = slots["VaccineType"]["value"]["interpretedValue"]
-        result = add_vaccine_record(DEMO_BABY_ID, record_datetime, vaccine_type)
-        message = "Update baby growth record result: {}".format(result)
+        result = add_vaccine_record(DEMO_BABY_ID, record_date, vaccine_type)
+        message = "Update baby vaccine record result: {}".format(result)
 
     if intent == "addSleepRecord":
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
         if "StartTime" in slots and "value" in slots["StartTime"]:
             start_time = slots["StartTime"]["value"]["interpretedValue"]
         else:
             start_time = None
 
+        if "EndTime" in slots and "value" in slots["EndTime"]:
+            end_time = slots["EndTime"]["value"]["interpretedValue"]
+        else:
+            end_time = None
+
+        result = add_sleep_record(DEMO_BABY_ID, record_date, start_time, end_time)
+        message = "Add sleep record result: {}".format(result)
 
     if intent == "addBottleFeed":
         record_date = datetime.utcnow().strftime('%Y-%m-%d')
         time = slots["Time"]["value"]["interpretedValue"]
-        # time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        if time == "now":
+            time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
         volume = slots["Volume"]["value"]["interpretedValue"]
         result = add_bottle_feed(DEMO_BABY_ID, record_date, time, volume)
-        message = "Update baby growth record result: {}".format(result)
+        message = "Add bottle feed result: {}".format(result)
+
+    if intent == "addNurseFeed":
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
+        if "StartTime" in slots and "value" in slots["StartTime"]:
+            start_time = slots["StartTime"]["value"]["interpretedValue"]
+        else:
+            start_time = None
+
+        if "EndTime" in slots and "value" in slots["EndTime"]:
+            end_time = slots["EndTime"]["value"]["interpretedValue"]
+        else:
+            end_time = None
+
+        result = add_nurse_feed(DEMO_BABY_ID, record_date, start_time, end_time)
+        message = "Add nurse feed result: {}".format(result)
+
+    if intent == "addSolidFood":
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
+        time = slots["Time"]["value"]["interpretedValue"]
+        if time == "now":
+            time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        food_type = slots["Type"]["value"]["interpretedValue"]
+        result = add_solid_food(DEMO_BABY_ID, record_date, time, food_type)
+        message = "Add solid food result: {}".format(result)
+
+    if intent == "addDiaperPee":
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
+        time = slots["Time"]["value"]["interpretedValue"]
+        if time == "now":
+            time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        result = add_diaper_pee(DEMO_BABY_ID, record_date, time)
+        message = "Add diaper pee result: {}".format(result)
+
+    if intent == "addDiaperPoo":
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
+        time = slots["Time"]["value"]["interpretedValue"]
+        if time == "now":
+            time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        result = add_diaper_poo(DEMO_BABY_ID, record_date, time)
+        message = "Add diaper poo result: {}".format(result)
+
+    if intent == "addBath":
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
+        time = slots["Time"]["value"]["interpretedValue"]
+        if time == "now":
+            time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        result = add_bath(DEMO_BABY_ID, record_date, time)
+        message = "Add bath result: {}".format(result)
+
+    if intent == "addMedicine":
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
+        time = slots["Time"]["value"]["interpretedValue"]
+        if time == "now":
+            time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
+        if "MedType" in slots and "value" in slots["MedType"]:
+            med_type = slots["MedType"]["value"]["interpretedValue"]
+        else:
+            med_type = None
+        result = add_medicine(DEMO_BABY_ID, record_date, time, med_type)
+        message = "Add medicine result: {}".format(result)
 
     # Generate response
     response = {
@@ -89,8 +164,8 @@ def dispatch(intent: str, slots: any):
 
     '''
     - createBaby(first_name, last_name, gender, birthday)x
-    - addGrowthRecord(baby_id, record_datetime, height, weight, head_circumference)
-    - addVaccineRecord(baby_id, record_datetime, vaccine_type)
+    - addGrowthRecord(baby_id, record_date, height, weight, head_circumference)
+    - addVaccineRecord(baby_id, record_date, vaccine_type)
     - addSleepRecord(baby_id, date, start_time, end_time)
     - addBottleFeed(baby_id, date, bottle_time, volume)
     - addNurseFeed(baby_id, date, start_time, end_time)
@@ -98,7 +173,6 @@ def dispatch(intent: str, slots: any):
     - addDiaperPee(baby_id, date, pee_time)
     - addDiaperPoo(baby_id, date, poo_time)
     - addBath(baby_id, date, bath_time)
-    - addVaccine(baby_id, date, vaccine_type)
     - addMedicine(baby_id, date, medicine_time, medicine_type)
     
     - getMostRecentHeight(baby_id)
@@ -133,6 +207,7 @@ def dispatch(intent: str, slots: any):
     - updateMostRecentSleepStartRecord(baby_id, start_time)**********
     - updateMostRecentSleepEndRecord(baby_id, end_time)**********
     - updateMostRecentBottleFeed(baby_id, volume, bottle_time)
+    - updateMostRecentVaccineDate...
     
     
     '''

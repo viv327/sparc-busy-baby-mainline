@@ -4,14 +4,14 @@ from decimal import Decimal
 
 
 class Growth(BaseModel):
-    record_datetime: str
+    record_date: str
     height: Optional[str]
     weight: Optional[str]
     head_circumference: Optional[str]
 
 
 class Vaccine(BaseModel):
-    record_datetime: str
+    record_date: str
     vaccine_type: str
 
 

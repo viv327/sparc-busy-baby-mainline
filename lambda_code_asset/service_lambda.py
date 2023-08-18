@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from busy_baby.api import create_baby, add_growth_record, add_vaccine_record, add_bottle_feed
-from busy_baby.constants import DEMO_BABY_ID
+from lambda_code_asset.busy_baby.constants import CREATE_BABY_INTENT, FIRST_NAME, LAST_NAME, GENDER, BIRTHDAY
 
 
 def dispatch(intent: str, slots: any):
@@ -9,11 +9,18 @@ def dispatch(intent: str, slots: any):
     message = ''
 
     # dispatch to different service based on different intent
-    if intent == "createBaby":
-        first_name = slots["FirstName"]["value"]["interpretedValue"]
-        last_name = slots["LastName"]["value"]["interpretedValue"]
-        gender = slots["Gender"]["value"]["interpretedValue"]
-        birthday = slots["Birthday"]["value"]["interpretedValue"]
+    # if intent == "createBaby":
+    #     first_name = slots["FirstName"]["value"]["interpretedValue"]
+    #     last_name = slots["LastName"]["value"]["interpretedValue"]
+    #     gender = slots["Gender"]["value"]["interpretedValue"]
+    #     birthday = slots["Birthday"]["value"]["interpretedValue"]
+
+    if intent == CREATE_BABY_INTENT:
+        first_name = slots[FIRST_NAME]["value"]["interpretedValue"]
+        last_name = slots[LAST_NAME]["value"]["interpretedValue"]
+        gender = slots[GENDER]["value"]["interpretedValue"]
+        birthday = slots[BIRTHDAY]["value"]["interpretedValue"]
+
 
         result = create_baby(first_name, last_name, gender, birthday)
         message = "Baby profile creation result: {}".format(result)

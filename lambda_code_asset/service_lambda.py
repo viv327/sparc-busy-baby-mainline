@@ -158,6 +158,7 @@ def dispatch(intent: str, slots: any):
             {
                 "contentType": "PlainText",
                 "content": message
+                # "content": "YAY, connected!"
             }
         ]
     }
@@ -174,7 +175,7 @@ def dispatch(intent: str, slots: any):
     - addDiaperPoo(baby_id, date, poo_time)
     - addBath(baby_id, date, bath_time)
     - addMedicine(baby_id, date, medicine_time, medicine_type)
-    
+
     - getMostRecentHeight(baby_id)
     - getMostRecentWeight(baby_id)
     - getMostRecentHeadCircumference(baby_id)
@@ -202,14 +203,14 @@ def dispatch(intent: str, slots: any):
     - getMostRecentBathTime(baby_id, date)
     - getMostRecentMedicineTime(baby_id, date)
     - getTotalMedicineCount(baby_id, date)
-    
+
     - deleteMostRecentSleepRecord(baby_id)
     - updateMostRecentSleepStartRecord(baby_id, start_time)**********
     - updateMostRecentSleepEndRecord(baby_id, end_time)**********
     - updateMostRecentBottleFeed(baby_id, volume, bottle_time)
     - updateMostRecentVaccineDate...
-    
-    
+
+
     '''
     # TODO: add more intents here, each with a handling function
     return response
@@ -228,6 +229,7 @@ def delegate(intent: str, slots: any):
         }
     }
 
+
 def dispatchTest(intent: str, slots: any):
     response = {
         "sessionState": {
@@ -245,32 +247,16 @@ def dispatchTest(intent: str, slots: any):
         "messages": [
             {
                 "contentType": "PlainText",
-                "content": "Howray! FulfillmentCodeHook!"
+                "content": "YAY!"
             }
         ]
     }
 
     return response
 
-# def main(event, context):
-#     print('request: {}'.format(json.dumps(event)))
-#
-#     intent = event["sessionState"]["intent"]["name"]
-#     slots = event["sessionState"]["intent"]["slots"]
-#
-#     print(event["invocationSource"])
-#     print(intent)
-#     print(slots)
-#
-#     if event['invocationSource'] == 'DialogCodeHook':
-#         response = delegate(intent, slots)
-#
-#     if event["invocationSource"] == "FulfillmentCodeHook":
-#         response = dispatch(intent, slots)
-#
-#     return response
 
-def lambda_handler(event: any, context: any):
+def main(event, context):
+    print('request: {}'.format(json.dumps(event)))
 
     intent = event["sessionState"]["intent"]["name"]
     slots = event["sessionState"]["intent"]["slots"]
@@ -283,6 +269,7 @@ def lambda_handler(event: any, context: any):
         response = delegate(intent, slots)
 
     if event["invocationSource"] == "FulfillmentCodeHook":
-        response = dispatchTest(intent, slots)
+        response = dispatch(intent, slots)
 
     return response
+

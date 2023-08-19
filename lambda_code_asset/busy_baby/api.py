@@ -16,7 +16,7 @@ daily_record_table = dynamodb.Table(DAILY_RECORD_DDB_TABLE)  # create dynamodb t
 logger = logging.getLogger(__name__)
 
 
-def create_baby(first_name, last_name, gender, birthday):
+def create_baby(first_name, last_name, gender, birthday, delivery_time):
 
     # Create BabyProfile object
     baby_id = DEMO_BABY_ID  # use dummy ID for demo purpose, should use UUID otherwise
@@ -25,7 +25,8 @@ def create_baby(first_name, last_name, gender, birthday):
         first_name=first_name,
         last_name=last_name,
         gender=gender,
-        birthday=birthday
+        birthday=birthday,
+        delivery_time = delivery_time
     )
 
     # Convert to DDB item
@@ -68,11 +69,12 @@ def add_growth_record(baby_id, record_date, height, weight, head_circumference):
         raise e
 
 
-def add_vaccine_record(baby_id, record_date, vaccine_type):
+def add_vaccine_record(baby_id, record_date, vaccine_type, vaccine_note):
     try:
         vaccine_record = Vaccine(
             record_date=record_date,
             vaccine_type=vaccine_type,
+            vaccine_note = vaccine_note
         )
 
         result = baby_profile_table.update_item(
@@ -95,12 +97,13 @@ def add_vaccine_record(baby_id, record_date, vaccine_type):
         raise e
 
 
-def add_sleep_record(baby_id, date, start_time, end_time):
+def add_sleep_record(baby_id, date, start_time, end_time, sleep_note):
     try:
         if start_time:
             sleep_records = SleepRecord(
                 start_time=start_time,
-                end_time=end_time
+                end_time=end_time,
+                sleep_note = sleep_note
             )
             result = daily_record_table.update_item(
                 Key={
@@ -146,11 +149,12 @@ def add_sleep_record(baby_id, date, start_time, end_time):
         raise e
 
 
-def add_bottle_feed(baby_id, date, time, volume):
+def add_bottle_feed(baby_id, date, time, volume, formula_note):
     try:
         bottle_feeds = BottleFeed(
             time=time,
             volume=volume,
+            formula_note = formula_note
         )
 
         result = daily_record_table.update_item(
@@ -174,12 +178,13 @@ def add_bottle_feed(baby_id, date, time, volume):
         raise e
 
 
-def add_nurse_feed(baby_id, date, start_time, end_time):
+def add_nurse_feed(baby_id, date, start_time, end_time, nursing_note):
     try:
         if start_time:
             nurse_feeds = NurseFeed(
                 start_time=start_time,
-                end_time=end_time
+                end_time=end_time,
+                nursing_note = nursing_note
             )
             result = daily_record_table.update_item(
                 Key={
@@ -224,11 +229,12 @@ def add_nurse_feed(baby_id, date, start_time, end_time):
         raise e
 
 
-def add_solid_food(baby_id, date, time, food_type):
+def add_solid_food(baby_id, date, time, food_type, food_note):
     try:
         solid_foods = SolidFood(
             time=time,
             food_type=food_type,
+            food_note = food_note
         )
 
         result = daily_record_table.update_item(
@@ -252,10 +258,11 @@ def add_solid_food(baby_id, date, time, food_type):
         raise e
 
 
-def add_diaper_pee(baby_id, date, time):
+def add_diaper_pee(baby_id, date, time, diaper_note):
     try:
         diaper_pees = DiaperPee(
             time=time,
+            diaper_note = diaper_note
         )
 
         result = daily_record_table.update_item(
@@ -279,10 +286,11 @@ def add_diaper_pee(baby_id, date, time):
         raise e
 
 
-def add_diaper_poo(baby_id, date, time):
+def add_diaper_poo(baby_id, date, time, diaper_note):
     try:
         diaper_poos = DiaperPoo(
             time=time,
+            diaper_note = diaper_note
         )
 
         result = daily_record_table.update_item(
@@ -306,10 +314,11 @@ def add_diaper_poo(baby_id, date, time):
         raise e
 
 
-def add_bath(baby_id, date, time):
+def add_bath(baby_id, date, time, bath_note):
     try:
         baths = Bath(
             time=time,
+            bath_note = bath_note
         )
 
         result = daily_record_table.update_item(
@@ -333,11 +342,12 @@ def add_bath(baby_id, date, time):
         raise e
 
 
-def add_medicine(baby_id, date, time, med_type):
+def add_medicine(baby_id, date, time, med_type, med_note):
     try:
         medicines = Medicine(
             time=time,
-            med_type=med_type
+            med_type=med_type,
+            med_note = med_note
         )
 
         result = daily_record_table.update_item(

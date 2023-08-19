@@ -1,5 +1,4 @@
 from enum import Enum
-
 from pydantic import BaseModel, Field
 
 from ..models.basic_info import BabyProfile
@@ -14,6 +13,7 @@ class BabyProfileDDBItemAttrs(Enum):
     BIRTHDAY = "birthday"
     GROWTH_RECORD = "growth_record"
     VACCINE_RECORD = "vaccine_record"
+    DELIVERY_TIME = "delivery_time"
 
     def __init__(self, ddb_attr):
         self.ddb_attr = ddb_attr
@@ -43,6 +43,7 @@ class BabyProfileDDBItem(BaseModel):
     birthday: str = Field(alias=BabyProfileDDBItemAttrs.BIRTHDAY.ddb_attr)
     growth_record: list = Field(alias=BabyProfileDDBItemAttrs.GROWTH_RECORD.ddb_attr)
     vaccine_record: list = Field(alias=BabyProfileDDBItemAttrs.VACCINE_RECORD.ddb_attr)
+    delivery_time: str = Field(alias=BabyProfileDDBItemAttrs.DELIVERY_TIME.ddb_attr)
 
     def to_entity(self):
         return BabyProfile(
@@ -52,7 +53,8 @@ class BabyProfileDDBItem(BaseModel):
             gender=self.gender,
             birthday=self.birthday,
             growth_record=self.growth_record,
-            vaccine_record=self.vaccine_record
+            vaccine_record=self.vaccine_record,
+            delivery_time = self.delivery_time
         )
 
     @staticmethod
@@ -64,7 +66,8 @@ class BabyProfileDDBItem(BaseModel):
             gender=baby_profile.gender,
             birthday=baby_profile.birthday,
             growth_record=baby_profile.growth_record,
-            vaccine_record = baby_profile.vaccine_record
+            vaccine_record = baby_profile.vaccine_record,
+            delivery_time = baby_profile.delivery_time
         )
 
     def to_ddb(self):

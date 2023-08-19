@@ -7,38 +7,46 @@ from typing import List, Optional
 class SleepRecord(BaseModel):
     start_time: Optional[str]
     end_time: Optional[str]
+    sleep_note: str
 
 
 class BottleFeed(BaseModel):
     time: str
     volume: int
+    formula_note: str
 
 
 class NurseFeed(BaseModel):
     start_time: Optional[str]
     end_time: Optional[str]
+    nursing_note: str
 
 
 class SolidFood(BaseModel):
     time: str
     food_type: str
+    food_note: str
 
 
 class DiaperPee(BaseModel):
     time: str
+    diaper_note: str
 
 
 class DiaperPoo(BaseModel):
     time: str
+    diaper_note: str
 
 
 class Bath(BaseModel):
     time: str
+    bath_note: str
 
 
 class Medicine(BaseModel):
     time: str
     med_type: Optional[str]
+    med_note: str
 
 
 class DailyRecord(BaseModel):

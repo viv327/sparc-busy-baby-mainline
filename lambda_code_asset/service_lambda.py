@@ -297,30 +297,31 @@ def dispatch(intent: str, slots: any):
             result = get_total_medicine_count(DEMO_BABY_ID, record_date)
             message = "Had medicine {} time(s)".format(result)
 
-        if intent == "deleteMostRecentSleepRecord":
-            record_date = datetime.utcnow().strftime('%Y-%m-%d')
-            result = delete_most_recent_sleep_record(DEMO_BABY_ID, record_date)
-            message = "Delete most recent sleep record result: {}".format(result)
+    if intent == "deleteMostRecentSleepRecord":  # "Delete her last sleep record"
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
+                SLEEP_DATE)
+        result = delete_most_recent_sleep_record(DEMO_BABY_ID, record_date)
+        message = "Delete most recent sleep record result: {}".format(result)
 
-        if intent == "updateMostRecentVaccineDate":
-            vaccine_date = getSlotVal(VACCINE_DATE)
-            result = update_most_recent_vaccine_date(DEMO_BABY_ID, vaccine_date)
-            message = "Update most recent vaccine date result: {}".format(result)
+    if intent == "updateMostRecentVaccineDate":    # "Update her last vaccine date to yesterday"
+        vaccine_date = getSlotVal(VACCINE_DATE)
+        result = update_most_recent_vaccine_date(DEMO_BABY_ID, vaccine_date)
+        message = "Update most recent vaccine date result: {}".format(result)
 
-        if intent == "updateMostRecentSleepRecord":
-            record_date = datetime.utcnow().strftime('%Y-%m-%d')
-            sleep_time = getSlotVal(SLEEP_TIME)
-            start_end = getSlotVal(START_END)
-            start_time = sleep_time if start_end == "start" else None
-            end_time = sleep_time if start_end == "end" else None
-            result = update_most_recent_sleep_record(DEMO_BABY_ID, record_date, start_time, end_time)
-            message = "Update most recent sleep record result: {}".format(result)
+    if intent == "updateMostRecentSleepRecord":  # "Update her last sleep start/end time to now"
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
+        sleep_time = getSlotVal(SLEEP_TIME)
+        start_end = getSlotVal(START_END)
+        start_time = sleep_time if start_end == "start" else None
+        end_time = sleep_time if start_end == "end" else None
+        result = update_most_recent_sleep_record(DEMO_BABY_ID, record_date, start_time, end_time)
+        message = "Update most recent sleep record result: {}".format(result)
 
-        if intent == "updateMostRecentBottleFeed":
-            record_date = datetime.utcnow().strftime('%Y-%m-%d')
-            formula_volume = getSlotVal(FORMULA_VOLUME)
-            result = update_most_recent_bottle_feed(DEMO_BABY_ID, record_date, formula_volume)
-            message = "Update most recent bottle feed result: {}".format(result)
+    if intent == "updateMostRecentBottleFeed":  # "Update her last bottle feed volume to 40 ml"
+        record_date = datetime.utcnow().strftime('%Y-%m-%d')
+        formula_volume = getSlotVal(FORMULA_VOLUME)
+        result = update_most_recent_bottle_feed(DEMO_BABY_ID, record_date, formula_volume)
+        message = "Update most recent bottle feed result: {}".format(result)
 
 
     # Generate response

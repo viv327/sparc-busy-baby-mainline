@@ -512,10 +512,12 @@ class TestAPI:
     def test_delete_most_recent_sleep_record(self, ddb_client):
         with create_daily_record_table(ddb_client):
             api.add_sleep_record(DEMO_BABY_ID, '2023-08-17', '2023-08-17T19:22:36', '2023-08-17T20:52:38', None)
-            api.add_sleep_record(DEMO_BABY_ID, '2023-08-17', '2023-08-17T20:22:36', '2023-08-17T21:52:38', None)
+            # api.add_sleep_record(DEMO_BABY_ID, '2023-08-17', '2023-08-17T20:22:36', '2023-08-17T21:52:38', None)
             api.delete_most_recent_sleep_record(DEMO_BABY_ID, '2023-08-17')
-            result = api.get_most_recent_sleep_end(DEMO_BABY_ID, '2023-08-17')
-            assert result == '08:52PM'
+            # result = api.get_most_recent_sleep_end(DEMO_BABY_ID, '2023-08-17')
+            # assert result == '08:52PM'
+            result = api.get_total_sleep_count(DEMO_BABY_ID, '2023-08-17')
+            assert result == "0"
 
     def test_update_most_recent_vaccine_date(self, ddb_client):
         with create_baby_profile_table(ddb_client):

@@ -820,14 +820,14 @@ def delete_most_recent_sleep_record(baby_id, record_date):
 
     # convert to DailyRecord object
     daily_record = DailyRecord(**item)
-    sleep_len = str(len(daily_record.sleep_records) - 1)
+    sleep_index = str(len(daily_record.sleep_records) - 1)
 
     result = daily_record_table.update_item(
         Key={
             "baby_id": baby_id,
             "record_date": record_date
         },
-        UpdateExpression="REMOVE sleep_records[" + sleep_len + "]",
+        UpdateExpression="REMOVE sleep_records[" + sleep_index + "]",
         # ExpressionAttributeValues={
         #     ':i': end_time
         # },

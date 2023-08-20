@@ -88,15 +88,6 @@ def dispatch(intent: str, slots: any):
 
     if intent == ADD_NURSING:
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(NURSING_DATE)
-        # if "StartTime" in slots and "value" in slots["StartTime"]:
-        #     start_time = slots["StartTime"]["value"]["interpretedValue"]
-        # else:
-        #     start_time = None
-        #
-        # if "EndTime" in slots and "value" in slots["EndTime"]:
-        #     end_time = slots["EndTime"]["value"]["interpretedValue"]
-        # else:
-        #     end_time = None
 
         nursing_time = getSlotVal(NURSING_TIME)
         nursing_note = getSlotVal(NURSING_NOTE)
@@ -116,18 +107,6 @@ def dispatch(intent: str, slots: any):
         food_type = getSlotVal(FOOD_TYPE)
         result = add_solid_food(DEMO_BABY_ID, record_date, food_time, food_type, food_note)
         message = "Add solid food result: {}".format(result)
-
-    # # if intent == "addDiaperPee":
-    #     record_date = datetime.utcnow().strftime('%Y-%m-%d')
-    #     diaper_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S') if getSlotVal(DIAPER_TIME)=="now" else getSlotVal(DIAPER_TIME)
-    #     result = add_diaper_pee(DEMO_BABY_ID, record_date, diaper_time)
-    #     message = "Add diaper pee result: {}".format(result)
-    #
-    # if intent == "addDiaperPoo":
-    #     record_date = datetime.utcnow().strftime('%Y-%m-%d')
-    #     diaper_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S') if getSlotVal(DIAPER_TIME)=="now" else getSlotVal(DIAPER_TIME)
-    #     result = add_diaper_poo(DEMO_BABY_ID, record_date, diaper_time)
-    #     message = "Add diaper poo result: {}".format(result)
 
     if intent == ADD_DIAPER:
         diaper_type = getSlotVal(DIAPER_TYPE)
@@ -150,12 +129,6 @@ def dispatch(intent: str, slots: any):
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(MED_DATE) == "today" else getSlotVal(MED_DATE)
         med_time = getSlotVal(MED_TIME)
         med_note = getSlotVal(MED_NOTE)
-
-        # med_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S') if getSlotVal(MED_TIME) == "now" else getSlotVal(MED_TIME)
-        # if "MedType" in slots and "value" in slots["MedType"]:
-        #     med_type = slots["MedType"]["value"]["interpretedValue"]
-        # else:
-        #     med_type = None
 
         # if user invoke the "add medication" intent, they should offer a medication type. should not be None
         med_type = getSlotVal(MED_TYPE)
@@ -206,7 +179,7 @@ def dispatch(intent: str, slots: any):
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
             SLEEP_DATE)
         result = get_total_sleep_count(DEMO_BABY_ID, record_date)
-        message = "Slept for {} times".format(result)
+        message = "Slept for {} time(s)".format(result)
 
     if intent == "getMostRecentBottleFeed":  # for query: "How much formula did she drink last time?"
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
@@ -224,19 +197,19 @@ def dispatch(intent: str, slots: any):
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
             FORMULA_DATE)
         result = get_total_bottle_feed_count(DEMO_BABY_ID, record_date)
-        message = "{} times".format(result)
+        message = "{} time(s)".format(result)
 
     if intent == "getMostRecentNurseFeedEnd":  # for query: "When was the last time she was nurse fed?"
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(
             NURSING_DATE)
         result = get_most_recent_nurse_feed_end(DEMO_BABY_ID, record_date)
-        message = "Last woke up at {}".format(result)
+        message = "Last nurse fed at {}".format(result)
 
     if intent == "getTotalNurseFeedCount":  # for query: "How many times has she been nurse fed today?"
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(
             NURSING_DATE)
         result = get_total_nurse_feed_count(DEMO_BABY_ID, record_date)
-        message = "Nurse fed {} times".format(result)
+        message = "Nurse fed {} time(s)".format(result)
 
     if intent == "getMostRecentSolidFood":  # for query: "What was the most recent solid food she had?"
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
@@ -248,7 +221,7 @@ def dispatch(intent: str, slots: any):
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
             FOOD_DATE)
         result = get_total_solid_food_count(DEMO_BABY_ID, record_date)
-        message = "Had solid food {} times".format(result)
+        message = "Had solid food {} time(s)".format(result)
 
     if intent == "getAllSolidFoodTypes":  # for query: "What types of solid foods has she had today?"
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
@@ -266,7 +239,7 @@ def dispatch(intent: str, slots: any):
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
             DIAPER_DATE)
         result = get_total_diaper_pee_count(DEMO_BABY_ID, record_date)
-        message = "Peed {} times".format(result)
+        message = "Peed {} time(s)".format(result)
 
     if intent == "getMostRecentDiaperPoo":  # for query: "When was her last poo-poo?"
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
@@ -278,7 +251,7 @@ def dispatch(intent: str, slots: any):
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
             DIAPER_DATE)
         result = get_total_diaper_poo_count(DEMO_BABY_ID, record_date)
-        message = "Pooped {} times".format(result)
+        message = "Pooped {} time(s)".format(result)
 
     if intent == "getMostRecentBath":  # for query: "When did she bathed?" (Suppose she has bathed in the current day)
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(BATH_DATE) == "today" else getSlotVal(
@@ -296,7 +269,7 @@ def dispatch(intent: str, slots: any):
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(MED_DATE) == "today" else getSlotVal(
             MED_DATE)
         result = get_total_medicine_count(DEMO_BABY_ID, record_date)
-        message = "Had medicine {} times".format(result)
+        message = "Had medicine {} time(s)".format(result)
 
     # Generate response
     response = {

@@ -45,7 +45,7 @@ class Bath(BaseModel):
 
 class Medicine(BaseModel):
     time: str
-    med_type: Optional[str]
+    med_type: str
     med_note: Optional[str]
 
 

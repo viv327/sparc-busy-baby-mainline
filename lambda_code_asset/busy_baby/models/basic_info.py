@@ -13,7 +13,7 @@ class Growth(BaseModel):
 class Vaccine(BaseModel):
     record_date: str
     vaccine_type: str
-    vaccine_note: str
+    vaccine_note: Optional[str]
 
 
 class BabyProfile(BaseModel):
@@ -24,4 +24,4 @@ class BabyProfile(BaseModel):
     birthday: str
     growth_record: Optional[List[Growth]] = []
     vaccine_record: Optional[List[Vaccine]] = []
-    delivery_time: str
+    delivery_time: Optional[str]

@@ -2,6 +2,8 @@ import boto3
 import logging
 import os
 import uuid
+import dateutil.parser
+from datetime import timedelta, datetime
 from .constants import BABY_PROFILE_DDB_TABLE, DAILY_RECORD_DDB_TABLE, DEMO_BABY_ID
 from .models.basic_info import Growth, BabyProfile, Vaccine
 from .models.daily_record import SleepRecord, BottleFeed, NurseFeed, SolidFood, DiaperPee, DiaperPoo, Bath, Medicine
@@ -118,25 +120,28 @@ def add_sleep_record(baby_id, date, start_time, end_time, sleep_note):
                 ReturnValues="UPDATED_NEW"
             )
 
-        else: # start_time is None but not end_time
+        else:  # start_time is None but not end_time
             # read the DDBi tem first, find the last element from the list, then update
-            sleep_records = daily_record_table.get_item(
+            item = daily_record_table.get_item(
                 Key={
                     "baby_id": baby_id,
                     "record_date": date
                 }
             )['Item']
 
-            last_item_index = str(len(sleep_records)-1)
+            # convert to DailyRecord object
+            daily_record = DailyRecord(**item)
+
+            last_item_index = str(len(daily_record.sleep_records) - 1)
 
             result = daily_record_table.update_item(
                 Key={
                     "baby_id": baby_id,
                     "record_date": date
                 },
-                UpdateExpression="set sleep_records[" + last_item_index + "].end_time = :i)",
+                UpdateExpression="set sleep_records[" + last_item_index + "].end_time = :i",
                 ExpressionAttributeValues={
-                    ':i': end_time
+                    ':i': end_time,
                 },
                 ReturnValues="UPDATED_NEW"
             )
@@ -200,21 +205,24 @@ def add_nurse_feed(baby_id, date, start_time, end_time, nursing_note):
             )
         else:  # start_time is None but not end_time
             # read the DDB item first, find the last element from the list, then update
-            nurse_feeds = daily_record_table.get_item(
+            item = daily_record_table.get_item(
                 Key={
                     "baby_id": baby_id,
                     "record_date": date
                 }
             )['Item']
 
-            last_item_index = str(len(nurse_feeds) - 1)
+            # convert to DailyRecord object
+            daily_record = DailyRecord(**item)
+
+            last_item_index = str(len(daily_record.nurse_feeds) - 1)
 
             result = daily_record_table.update_item(
                 Key={
                     "baby_id": baby_id,
                     "record_date": date
                 },
-                UpdateExpression="set nurse_feeds[" + last_item_index + "].end_time = :i)",
+                UpdateExpression="set nurse_feeds[" + last_item_index + "].end_time = :i",
                 ExpressionAttributeValues={
                     ':i': end_time
                 },
@@ -369,3 +377,456 @@ def add_medicine(baby_id, date, time, med_type, med_note):
     except Exception as e:
         logger.error("Failed to add medicine")
         raise e
+
+
+def get_most_recent_height(baby_id):
+    item = baby_profile_table.get_item(
+        Key={
+            "baby_id": baby_id,
+        }
+    )['Item']
+
+    baby_profile = BabyProfile(**item)
+    growth_len = len(baby_profile.growth_record)
+    last_height = None
+    last_date = None
+    for i in range(growth_len-1, -1, -1):
+        if baby_profile.growth_record[i].height:
+            last_height = baby_profile.growth_record[i].height
+            last_date = baby_profile.growth_record[i].record_date
+            break
+
+    return last_height, last_date
+
+
+def get_most_recent_weight(baby_id):
+    item = baby_profile_table.get_item(
+        Key={
+            "baby_id": baby_id,
+        }
+    )['Item']
+
+    baby_profile = BabyProfile(**item)
+    growth_len = len(baby_profile.growth_record)
+    last_weight = None
+    last_date = None
+    for i in range(growth_len-1, -1, -1):
+        if baby_profile.growth_record[i].weight:
+            last_weight = baby_profile.growth_record[i].weight
+            last_date = baby_profile.growth_record[i].record_date
+            break
+
+    return last_weight, last_date
+
+
+def get_most_recent_head_circumference(baby_id):
+    item = baby_profile_table.get_item(
+        Key={
+            "baby_id": baby_id,
+        }
+    )['Item']
+
+    baby_profile = BabyProfile(**item)
+    growth_len = len(baby_profile.growth_record)
+    last_head_circumference = None
+    last_date = None
+    for i in range(growth_len-1, -1, -1):
+        if baby_profile.growth_record[i].head_circumference:
+            last_head_circumference = baby_profile.growth_record[i].head_circumference
+            last_date = baby_profile.growth_record[i].record_date
+            break
+
+    return last_head_circumference, last_date
+
+
+def get_most_recent_vaccine(baby_id):
+    item = baby_profile_table.get_item(
+        Key={
+            "baby_id": baby_id,
+        }
+    )['Item']
+
+    baby_profile = BabyProfile(**item)
+    vaccine_len = len(baby_profile.vaccine_record)
+    last_vaccine = None
+    last_date = None
+    if vaccine_len > 0:
+        last_vaccine = baby_profile.vaccine_record[-1].vaccine_type
+        last_date = baby_profile.vaccine_record[-1].record_date
+
+    return last_vaccine, last_date
+
+
+def get_most_recent_sleep_start(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    sleep_len = len(daily_record.sleep_records)
+    last_sleep_start = None
+
+    for i in range(sleep_len-1, -1, -1):
+        if daily_record.sleep_records[i].start_time:
+            last_sleep_start = daily_record.sleep_records[i].start_time
+            break
+    parsed_datetime = datetime.strptime(last_sleep_start, "%Y-%m-%dT%H:%M:%S")
+    formatted_time = parsed_datetime.strftime("%I:%M%p")
+
+    return formatted_time
+
+
+def get_most_recent_sleep_end(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    sleep_len = len(daily_record.sleep_records)
+    last_sleep_end = None
+
+    for i in range(sleep_len-1, -1, -1):
+        if daily_record.sleep_records[i].end_time:
+            last_sleep_end = daily_record.sleep_records[i].end_time
+            break
+    parsed_datetime = datetime.strptime(last_sleep_end, "%Y-%m-%dT%H:%M:%S")
+    formatted_time = parsed_datetime.strftime("%I:%M%p")
+    return formatted_time
+
+
+def get_most_recent_sleep_duration(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    sleep_len = len(daily_record.sleep_records)
+    result = None
+
+    for i in range(sleep_len-1, -1, -1):
+        if daily_record.sleep_records[i].start_time and daily_record.sleep_records[i].end_time:
+            last_sleep_start = daily_record.sleep_records[i].start_time
+            last_sleep_end = daily_record.sleep_records[i].end_time
+            duration = dateutil.parser.parse(last_sleep_end) - dateutil.parser.parse(last_sleep_start)
+            result = format_timedelta(duration)
+            break
+    return result
+
+
+def format_timedelta(duration):
+    # helper function to format datetime.timedelta format time duration into user readable string
+    # seconds are ignored
+    hours, remainder = divmod(duration.seconds, 3600)
+    minutes, _ = divmod(remainder, 60)
+
+    formatted_duration = ""
+
+    if duration.days > 0:
+        formatted_duration += f"{duration.days} day{'s' if duration.days != 1 else ''} "
+
+    if hours > 0:
+        formatted_duration += f"{hours} hour{'s' if hours != 1 else ''} "
+
+    if minutes > 0:
+        formatted_duration += f"{minutes} minute{'s' if minutes != 1 else ''}"
+
+    return formatted_duration
+
+
+def get_total_sleep_time(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    sleep_len = len(daily_record.sleep_records)
+    total_sleep_time = timedelta()
+
+    for i in range(sleep_len-1, -1, -1):
+        if daily_record.sleep_records[i].start_time and daily_record.sleep_records[i].end_time:
+            last_sleep_start = daily_record.sleep_records[i].start_time
+            last_sleep_end = daily_record.sleep_records[i].end_time
+            total_sleep_time += dateutil.parser.parse(last_sleep_end) - dateutil.parser.parse(last_sleep_start)
+    result = format_timedelta(total_sleep_time)
+
+    return result
+
+
+def get_total_sleep_count(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    sleep_len = len(daily_record.sleep_records)
+    total_sleep_count = 0
+
+    for i in range(sleep_len-1, -1, -1):
+        if daily_record.sleep_records[i].start_time and daily_record.sleep_records[i].end_time:
+            total_sleep_count += 1
+
+    return str(total_sleep_count)
+
+
+def get_most_recent_bottle_feed(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    bottle_feed_len = len(daily_record.bottle_feeds)
+    last_bottle_volume = None
+    last_bottle_time = None
+
+    if bottle_feed_len > 0:
+        last_bottle_volume = daily_record.bottle_feeds[-1].volume
+        last_bottle_time = daily_record.bottle_feeds[-1].time
+
+    parsed_datetime = datetime.strptime(last_bottle_time, "%Y-%m-%dT%H:%M:%S")
+    formatted_time = parsed_datetime.strftime("%I:%M%p")
+    return str(last_bottle_volume), formatted_time
+
+
+def get_total_bottle_feed_volume(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    bottle_feed_len = len(daily_record.bottle_feeds)
+    total_bottle_volume = 0
+
+    for i in range(bottle_feed_len-1, -1, -1):
+        if daily_record.bottle_feeds[i].volume:
+            total_bottle_volume += daily_record.bottle_feeds[i].volume
+    return str(total_bottle_volume)
+
+
+def get_total_bottle_feed_count(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    total_bottle_count = len(daily_record.bottle_feeds)
+
+    return str(total_bottle_count)
+
+
+def get_most_recent_nurse_feed_end(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    nurse_len = len(daily_record.nurse_feeds)
+    last_nurse_feed_end = None
+
+    for i in range(nurse_len-1, -1, -1):
+        if daily_record.nurse_feeds[i].end_time:
+            last_nurse_feed_end = daily_record.nurse_feeds[i].end_time
+            break
+    parsed_datetime = datetime.strptime(last_nurse_feed_end, "%Y-%m-%dT%H:%M:%S")
+    formatted_time = parsed_datetime.strftime("%I:%M%p")
+    return formatted_time
+
+
+def get_total_nurse_feed_count(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    nurse_len = len(daily_record.nurse_feeds)
+    total_nurse_count = 0
+
+    for i in range(nurse_len-1, -1, -1):
+        if daily_record.nurse_feeds[i].start_time and daily_record.nurse_feeds[i].end_time:
+            total_nurse_count += 1
+
+    return str(total_nurse_count)
+
+
+def get_most_recent_solid_food(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    solid_len = len(daily_record.solid_foods)
+    last_solid_food_type = None
+    last_solid_food_time = None
+
+    if solid_len > 0:
+        last_solid_food_type = daily_record.solid_foods[-1].food_type
+        last_solid_food_time = daily_record.solid_foods[-1].time
+    parsed_datetime = datetime.strptime(last_solid_food_time, "%Y-%m-%dT%H:%M:%S")
+    formatted_time = parsed_datetime.strftime("%I:%M%p")
+    return last_solid_food_type, formatted_time
+
+
+def get_total_solid_food_count(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    total_solid_count = len(daily_record.solid_foods)
+
+    return str(total_solid_count)
+
+
+def get_all_solid_food_types(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    solid_len = len(daily_record.solid_foods)
+    solid_list = []
+    for i in range(solid_len - 1, -1, -1):
+        solid_list.append(daily_record.solid_foods[i].food_type)
+
+    return set(solid_list)
+
+
+def get_most_recent_diaper_pee(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    last_pee = daily_record.diaper_pees[-1].time
+    parsed_datetime = datetime.strptime(last_pee, "%Y-%m-%dT%H:%M:%S")
+    formatted_time = parsed_datetime.strftime("%I:%M%p")
+    return formatted_time
+
+
+def get_total_diaper_pee_count(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    total_pee_count = len(daily_record.diaper_pees)
+
+    return str(total_pee_count)
+
+
+def get_most_recent_diaper_poo(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    last_poo = daily_record.diaper_poos[-1].time
+    parsed_datetime = datetime.strptime(last_poo, "%Y-%m-%dT%H:%M:%S")
+    formatted_time = parsed_datetime.strftime("%I:%M%p")
+    return formatted_time
+
+
+def get_total_diaper_poo_count(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    total_poo_count = len(daily_record.diaper_poos)
+
+    return str(total_poo_count)
+
+
+def get_most_recent_bath(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    last_bath = daily_record.baths[-1].time
+    parsed_datetime = datetime.strptime(last_bath, "%Y-%m-%dT%H:%M:%S")
+    formatted_time = parsed_datetime.strftime("%I:%M%p")
+    return formatted_time
+
+
+def get_most_recent_medicine(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    last_medicine_type = daily_record.medicines[-1].med_type
+    last_medicine_time = daily_record.medicines[-1].time
+    parsed_datetime = datetime.strptime(last_medicine_time, "%Y-%m-%dT%H:%M:%S")
+    formatted_time = parsed_datetime.strftime("%I:%M%p")
+    return last_medicine_type, formatted_time
+
+
+def get_total_medicine_count(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    total_med_count = len(daily_record.medicines)
+
+    return str(total_med_count)

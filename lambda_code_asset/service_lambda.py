@@ -14,8 +14,7 @@ from busy_baby.constants import DEMO_BABY_ID, FIRST_NAME, LAST_NAME, GENDER, BIR
     GROWTH_TYPE, GROWTH_DATA, VACCINE_DATE, VACCINE_TYPE, SLEEP_TIME, START_END, FORMULA_TIME, FORMULA_VOLUME, \
     NURSING_TIME, FOOD_TIME, FOOD_TYPE, ADD_DIAPER, DIAPER_TYPE, DIAPER_TIME, BATH_TIME, MED_TIME, MED_TYPE, SLEEP_DATE, \
     FORMULA_DATE, NURSING_DATE, FOOD_DATE, DIAPER_DATE, BATH_DATE, MED_DATE, MED_NOTE, BATH_NOTE, DIAPER_NOTE, \
-    FOOD_NOTE, NURSING_NOTE, FORMULA_NOTE, SLEEP_NOTE, VACCINE_NOTE
-
+    FOOD_NOTE, NURSING_NOTE, FORMULA_NOTE, SLEEP_NOTE, VACCINE_NOTE, GET_RECORD, RECORD_TYPE
 
 
 def dispatch(intent: str, slots: any):
@@ -135,141 +134,167 @@ def dispatch(intent: str, slots: any):
         result = add_medicine(DEMO_BABY_ID, record_date, med_time, med_type, med_note)
         message = "Add medicine result: {}".format(result)
 
-    if intent == "getMostRecentHeight":  # for query: "What is her last-taken height?"
-        result = get_most_recent_height(DEMO_BABY_ID)
-        message = "Most recent height was {} inches on {}".format(result[0], result[1])
+    if intent == GET_RECORD:
+        record_type = getSlotVal(RECORD_TYPE)
+        # if intent == "getMostRecentHeight":  # for query: "What is her last-taken height?"
+        if record_type == "last_height":
+            result = get_most_recent_height(DEMO_BABY_ID)
+            message = "Most recent height was {} inches on {}".format(result[0], result[1])
 
-    if intent == "getMostRecentWeight":  # for query: "What is her last-taken weight?"
-        result = get_most_recent_weight(DEMO_BABY_ID)
-        message = "Most recent weight was {} pounds on {}".format(result[0], result[1])
+        # if intent == "getMostRecentWeight":  # for query: "What is her last-taken weight?"
+        if record_type == "last_weight":
+            result = get_most_recent_weight(DEMO_BABY_ID)
+            message = "Most recent weight was {} pounds on {}".format(result[0], result[1])
 
-    if intent == "getMostRecentHeadCircumference":  # for query: "What is her last-taken head circumference?"
-        result = get_most_recent_head_circumference(DEMO_BABY_ID)
-        message = "Most recent head circumference was {} inches on {}".format(result[0], result[1])
+        # if intent == "getMostRecentHeadCircumference":  # for query: "What is her last-taken head circumference?"
+        if record_type == "last_head":
+            result = get_most_recent_head_circumference(DEMO_BABY_ID)
+            message = "Most recent head circumference was {} inches on {}".format(result[0], result[1])
 
-    if intent == "getMostRecentVaccineDay":  # for query: "What is her last-taken vaccine?"
-        result = get_most_recent_vaccine(DEMO_BABY_ID)
-        message = "Most recent vaccine taken was {} on {}".format(result[0], result[1])
+        # if intent == "getMostRecentVaccineDay":  # for query: "What is her last-taken vaccine?"
+        if record_type == "last_vaccine":
+            result = get_most_recent_vaccine(DEMO_BABY_ID)
+            message = "Most recent vaccine taken was {} on {}".format(result[0], result[1])
 
-    if intent == "getMostRecentSleepStart":  # for query: "When did she fall asleep?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
-        result = get_most_recent_sleep_start(DEMO_BABY_ID, record_date)
-        message = "Fell asleep at {}".format(result)
+        # if intent == "getMostRecentSleepStart":  # for query: "When did she fall asleep?"
+        if record_type == "last_sleep_start":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
+                SLEEP_DATE)
+            result = get_most_recent_sleep_start(DEMO_BABY_ID, record_date)
+            message = "Fell asleep at {}".format(result)
 
-    if intent == "getMostRecentSleepEnd":  # for query: "When did she last wake up?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
-        result = get_most_recent_sleep_end(DEMO_BABY_ID, record_date)
-        message = "Last woke up at {}".format(result)
+        # if intent == "getMostRecentSleepEnd":  # for query: "When did she last wake up?"
+        if record_type == "last_sleep_end":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
+                SLEEP_DATE)
+            result = get_most_recent_sleep_end(DEMO_BABY_ID, record_date)
+            message = "Last woke up at {}".format(result)
 
-    if intent == "getMostRecentSleepDuration":  # for query: "How long was her last sleep?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
-        result = get_most_recent_sleep_duration(DEMO_BABY_ID, record_date)
-        message = "Last slept for {}".format(result)
+        # if intent == "getMostRecentSleepDuration":  # for query: "How long was her last sleep?"
+        if record_type == "sleep_duration":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
+                SLEEP_DATE)
+            result = get_most_recent_sleep_duration(DEMO_BABY_ID, record_date)
+            message = "Last slept for {}".format(result)
 
-    if intent == "getTotalSleepTime":  # for query: "How long did she sleep in total today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
-        result = get_total_sleep_time(DEMO_BABY_ID, record_date)
-        message = "Slept for {} hours in total".format(result)
+        # if intent == "getTotalSleepTime":  # for query: "How long did she sleep in total today?"
+        if record_type == "total_sleep":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
+                SLEEP_DATE)
+            result = get_total_sleep_time(DEMO_BABY_ID, record_date)
+            message = "Slept for {} hours in total".format(result)
 
-    if intent == "getTotalSleepCount":  # for query: "How many times has she slept today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
-        result = get_total_sleep_count(DEMO_BABY_ID, record_date)
-        message = "Slept for {} time(s)".format(result)
+        # if intent == "getTotalSleepCount":  # for query: "How many times has she slept today?"
+        if record_type == "sleep_count":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
+                SLEEP_DATE)
+            result = get_total_sleep_count(DEMO_BABY_ID, record_date)
+            message = "Slept for {} time(s)".format(result)
 
-    if intent == "getMostRecentBottleFeed":  # for query: "How much formula did she drink last time?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
-            FORMULA_DATE)
-        result = get_most_recent_bottle_feed(DEMO_BABY_ID, record_date)
-        message = "It was {} milliliters at {}".format(result[0], result[1])
+        # if intent == "getMostRecentBottleFeed":  # for query: "How much formula did she drink last time?"
+        if record_type == "last_formula":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
+                FORMULA_DATE)
+            result = get_most_recent_bottle_feed(DEMO_BABY_ID, record_date)
+            message = "It was {} milliliters at {}".format(result[0], result[1])
 
-    if intent == "getTotalBottleFeedVolume":  # for query: "How much formula has she had today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
-            FORMULA_DATE)
-        result = get_total_bottle_feed_volume(DEMO_BABY_ID, record_date)
-        message = "{} ounces in total".format(result)
+        # if intent == "getTotalBottleFeedVolume":  # for query: "How much formula has she had today?"
+        if record_type == "formula_vol":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
+                FORMULA_DATE)
+            result = get_total_bottle_feed_volume(DEMO_BABY_ID, record_date)
+            message = "{} ounces in total".format(result)
 
-    if intent == "getTotalBottleFeedCount":  # for query: "How many times has she had formula today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
-            FORMULA_DATE)
-        result = get_total_bottle_feed_count(DEMO_BABY_ID, record_date)
-        message = "{} time(s)".format(result)
+        # if intent == "getTotalBottleFeedCount":  # for query: "How many times has she had formula today?"
+        if record_type == "formula_count":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
+                FORMULA_DATE)
+            result = get_total_bottle_feed_count(DEMO_BABY_ID, record_date)
+            message = "{} time(s)".format(result)
 
-    if intent == "getMostRecentNurseFeedEnd":  # for query: "When was the last time she was nurse fed?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(
-            NURSING_DATE)
-        result = get_most_recent_nurse_feed_end(DEMO_BABY_ID, record_date)
-        message = "Last nurse fed at {}".format(result)
+        # if intent == "getMostRecentNurseFeedEnd":  # for query: "When was her last nurse fed?"
+        if record_type == "last_nurse":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(
+                NURSING_DATE)
+            result = get_most_recent_nurse_feed_end(DEMO_BABY_ID, record_date)
+            message = "Last nurse fed at {}".format(result)
 
-    if intent == "getTotalNurseFeedCount":  # for query: "How many times has she been nurse fed today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(
-            NURSING_DATE)
-        result = get_total_nurse_feed_count(DEMO_BABY_ID, record_date)
-        message = "Nurse fed {} time(s)".format(result)
+        # if intent == "getTotalNurseFeedCount":  # for query: "How many times has she been nurse fed today?"
+        if record_type == "nurse_count":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(
+                NURSING_DATE)
+            result = get_total_nurse_feed_count(DEMO_BABY_ID, record_date)
+            message = "Nurse fed {} time(s)".format(result)
 
-    if intent == "getMostRecentSolidFood":  # for query: "What was the most recent solid food she had?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
-            FOOD_DATE)
-        result = get_most_recent_solid_food(DEMO_BABY_ID, record_date)
-        message = "Most recent solid food was {} at {}".format(result[0], result[1])
+        # if intent == "getMostRecentSolidFood":  # for query: "What was the most recent solid food she had?"
+        if record_type == "last_solid":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
+                FOOD_DATE)
+            result = get_most_recent_solid_food(DEMO_BABY_ID, record_date)
+            message = "Most recent solid food was {} at {}".format(result[0], result[1])
 
-    if intent == "getTotalSolidFoodCount":  # for query: "How many times has she had solid food today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
-            FOOD_DATE)
-        result = get_total_solid_food_count(DEMO_BABY_ID, record_date)
-        message = "Had solid food {} time(s)".format(result)
+        # if intent == "getTotalSolidFoodCount":  # for query: "How many times has she had solid food today?"
+        if record_type == "solid_count":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
+                FOOD_DATE)
+            result = get_total_solid_food_count(DEMO_BABY_ID, record_date)
+            message = "Had solid food {} time(s)".format(result)
 
-    if intent == "getAllSolidFoodTypes":  # for query: "What types of solid foods has she had today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
-            FOOD_DATE)
-        result = get_all_solid_food_types(DEMO_BABY_ID, record_date)
-        message = "Solid food types: {}".format(result)
+        # if intent == "getAllSolidFoodTypes":  # for query: "What types of solid foods has she had today?"
+        if record_type == "solid_type":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
+                FOOD_DATE)
+            result = get_all_solid_food_types(DEMO_BABY_ID, record_date)
+            message = "Solid food types: {}".format(result)
 
-    if intent == "getMostRecentDiaperPee":  # for query: "When was her last pee-pee?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
-            DIAPER_DATE)
-        result = get_most_recent_diaper_pee(DEMO_BABY_ID, record_date)
-        message = "Last pee-pee at {}".format(result)
+        # if intent == "getMostRecentDiaperPee":  # for query: "When was her last pee-pee?"
+        if record_type == "last_pee":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
+                DIAPER_DATE)
+            result = get_most_recent_diaper_pee(DEMO_BABY_ID, record_date)
+            message = "Last pee-pee at {}".format(result)
 
-    if intent == "getTotalDiaperPeeCount":  # for query: "How many times has she peed today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
-            DIAPER_DATE)
-        result = get_total_diaper_pee_count(DEMO_BABY_ID, record_date)
-        message = "Peed {} time(s)".format(result)
+        # if intent == "getTotalDiaperPeeCount":  # for query: "How many times has she peed today?"
+        if record_type == "pee_count":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
+                DIAPER_DATE)
+            result = get_total_diaper_pee_count(DEMO_BABY_ID, record_date)
+            message = "Peed {} time(s)".format(result)
 
-    if intent == "getMostRecentDiaperPoo":  # for query: "When was her last poo-poo?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
-            DIAPER_DATE)
-        result = get_most_recent_diaper_poo(DEMO_BABY_ID, record_date)
-        message = "Last poo-poo at {}".format(result)
+        # if intent == "getMostRecentDiaperPoo":  # for query: "When was her last poo-poo?"
+        if record_type == "last_poo":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
+                DIAPER_DATE)
+            result = get_most_recent_diaper_poo(DEMO_BABY_ID, record_date)
+            message = "Last poo-poo at {}".format(result)
 
-    if intent == "getTotalDiaperPooCount":  # for query: "How many times has she pooped today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
-            DIAPER_DATE)
-        result = get_total_diaper_poo_count(DEMO_BABY_ID, record_date)
-        message = "Pooped {} time(s)".format(result)
+        # if intent == "getTotalDiaperPooCount":  # for query: "How many times has she pooped today?"
+        if record_type == "poo_count":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
+                DIAPER_DATE)
+            result = get_total_diaper_poo_count(DEMO_BABY_ID, record_date)
+            message = "Pooped {} time(s)".format(result)
 
-    if intent == "getMostRecentBath":  # for query: "When did she bathed?" (Suppose she has bathed in the current day)
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(BATH_DATE) == "today" else getSlotVal(
-            BATH_DATE)
-        result = get_most_recent_bath(DEMO_BABY_ID, record_date)
-        message = "Last bathed at {}".format(result)
+        # if intent == "getMostRecentBath":  # for query: "When did she have a bath?" (Suppose she has bathed in the current day)
+        if record_type == "last_bath":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(BATH_DATE) == "today" else getSlotVal(
+                BATH_DATE)
+            result = get_most_recent_bath(DEMO_BABY_ID, record_date)
+            message = "Last bathed at {}".format(result)
 
-    if intent == "getMostRecentMedicine":  # for query: "What was the last medicine she took?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(MED_DATE) == "today" else getSlotVal(
-            MED_DATE)
-        result = get_most_recent_medicine(DEMO_BABY_ID, record_date)
-        message = "Last took {} at {}".format(result[0], result[1])
+        # if intent == "getMostRecentMedicine":  # for query: "What was the last medication she took?"
+        if record_type == "last_med":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(MED_DATE) == "today" else getSlotVal(
+                MED_DATE)
+            result = get_most_recent_medicine(DEMO_BABY_ID, record_date)
+            message = "Last took {} at {}".format(result[0], result[1])
 
-    if intent == "getTotalMedicineCount":  # for query: "How many times has she took medicine today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(MED_DATE) == "today" else getSlotVal(
-            MED_DATE)
-        result = get_total_medicine_count(DEMO_BABY_ID, record_date)
-        message = "Had medicine {} time(s)".format(result)
+        # if intent == "getTotalMedicineCount":  # for query: "How many times has she taken medication today?"
+        if record_type == "med_count":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(MED_DATE) == "today" else getSlotVal(
+                MED_DATE)
+            result = get_total_medicine_count(DEMO_BABY_ID, record_date)
+            message = "Had medicine {} time(s)".format(result)
 
     # Generate response
     response = {

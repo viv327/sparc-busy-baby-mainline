@@ -158,8 +158,7 @@ def dispatch(intent: str, slots: any):
 
         # if intent == "getMostRecentSleepStart":  # for query: "When did she fall asleep?"
         if record_type == "last_sleep_start":
-            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-                SLEEP_DATE)
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(SLEEP_DATE)
             result = get_most_recent_sleep_start(DEMO_BABY_ID, record_date)
             message = "Fell asleep at {}".format(result)
 

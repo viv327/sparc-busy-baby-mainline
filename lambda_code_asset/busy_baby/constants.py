@@ -102,3 +102,4 @@ VACCINE_NOTE = "vaccine_note"
 
 # GET_RECORD = "getRecord"
 RECORD_TYPE = "get_record_type"
+RECORD_DATE = "record_date"

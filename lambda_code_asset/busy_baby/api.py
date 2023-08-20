@@ -520,10 +520,6 @@ def get_most_recent_sleep_duration(baby_id, record_date):
             break
     return result
 
-
-
-
-
 def get_total_sleep_time(baby_id, record_date):
     item = daily_record_table.get_item(
         Key={
@@ -812,3 +808,123 @@ def get_total_medicine_count(baby_id, record_date):
     total_med_count = len(daily_record.medicines)
 
     return str(total_med_count)
+
+
+def delete_most_recent_sleep_record(baby_id, record_date):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    # convert to DailyRecord object
+    daily_record = DailyRecord(**item)
+    sleep_len = str(len(daily_record.sleep_records) - 1)
+
+    result = daily_record_table.update_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        },
+        UpdateExpression="REMOVE sleep_records[" + sleep_len + "]",
+        # ExpressionAttributeValues={
+        #     ':i': end_time
+        # },
+        ReturnValues="UPDATED_NEW"
+    )
+
+    return "Success"
+
+
+def update_most_recent_vaccine_date(baby_id, vaccine_date):
+    item = baby_profile_table.get_item(
+        Key={
+            "baby_id": baby_id,
+        }
+    )['Item']
+    baby_profile = BabyProfile(**item)
+    last_item_index = str(len(baby_profile.vaccine_record) - 1)
+
+    result = baby_profile_table.update_item(
+        Key={
+            "baby_id": baby_id,
+        },
+        UpdateExpression="set vaccine_record[" + last_item_index + "].record_date = :i",
+        ExpressionAttributeValues={
+            ':i': vaccine_date
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+
+    logger.info(result)
+
+    return "Success"
+
+
+def update_most_recent_sleep_record(baby_id, record_date, start_time, end_time):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    last_item_index = str(len(daily_record.sleep_records) - 1)
+
+    if start_time:
+        result = daily_record_table.update_item(
+            Key={
+                "baby_id": baby_id,
+                "record_date": record_date
+            },
+            UpdateExpression="set sleep_records[" + last_item_index + "].start_time = :i",
+            ExpressionAttributeValues={
+                ':i': start_time
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+    else:
+        result = daily_record_table.update_item(
+            Key={
+                "baby_id": baby_id,
+                "record_date": record_date
+            },
+            UpdateExpression="set sleep_records[" + last_item_index + "].end_time = :i",
+            ExpressionAttributeValues={
+                ':i': end_time
+            },
+            ReturnValues="UPDATED_NEW"
+        )
+
+    logger.info(result)
+    return "Success"
+
+
+def update_most_recent_bottle_feed(baby_id, record_date, formula_volume):
+    item = daily_record_table.get_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        }
+    )['Item']
+
+    daily_record = DailyRecord(**item)
+    last_item_index = str(len(daily_record.bottle_feeds) - 1)
+
+    result = daily_record_table.update_item(
+        Key={
+            "baby_id": baby_id,
+            "record_date": record_date
+        },
+        UpdateExpression="set bottle_feeds[" + last_item_index + "].volume = :i",
+        ExpressionAttributeValues={
+            ':i': formula_volume
+        },
+        ReturnValues="UPDATED_NEW"
+    )
+
+    logger.info(result)
+    return "Success"
+

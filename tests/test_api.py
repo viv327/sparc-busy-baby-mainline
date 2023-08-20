@@ -508,3 +508,40 @@ class TestAPI:
             api.add_medicine(DEMO_BABY_ID, '2023-08-16', '2023-08-16T19:28:36', 'Tylenol', None)
             result = api.get_total_medicine_count(DEMO_BABY_ID, '2023-08-16')
             assert result == '2'
+
+    def test_delete_most_recent_sleep_record(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+            api.add_sleep_record(DEMO_BABY_ID, '2023-08-17', '2023-08-17T19:22:36', '2023-08-17T20:52:38', None)
+            api.add_sleep_record(DEMO_BABY_ID, '2023-08-17', '2023-08-17T20:22:36', '2023-08-17T21:52:38', None)
+            api.delete_most_recent_sleep_record(DEMO_BABY_ID, '2023-08-17')
+            result = api.get_most_recent_sleep_end(DEMO_BABY_ID, '2023-08-17')
+            assert result == '08:52PM'
+
+    def test_update_most_recent_vaccine_date(self, ddb_client):
+        with create_baby_profile_table(ddb_client):
+            baby_id = api.create_baby('Emma', 'Li', 'Female', '2020-02-02', '2023-08-17T19:22:36')
+            api.add_vaccine_record(DEMO_BABY_ID, '2023-08-17', 'DTaP', None)
+            api.add_vaccine_record(DEMO_BABY_ID, '2023-08-18', 'DTaP2', None)
+            api.update_most_recent_vaccine_date(DEMO_BABY_ID, '2023-08-19')
+            result = api.get_most_recent_vaccine(DEMO_BABY_ID)
+            assert result[1] == '2023-08-19'
+
+    def test_update_most_recent_sleep_record(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+            api.add_sleep_record(DEMO_BABY_ID, '2023-08-17', '2023-08-17T19:22:36', '2023-08-17T20:52:38', None)
+            api.add_sleep_record(DEMO_BABY_ID, '2023-08-17', '2023-08-17T20:22:36', '2023-08-17T21:52:38', None)
+            api.update_most_recent_sleep_record(DEMO_BABY_ID, '2023-08-17', '2023-08-17T20:30:36', None)
+            result = api.get_most_recent_sleep_start(DEMO_BABY_ID, '2023-08-17')
+            assert result == '08:30PM'
+            api.update_most_recent_sleep_record(DEMO_BABY_ID, '2023-08-17', None, '2023-08-17T21:50:38')
+            result = api.get_most_recent_sleep_end(DEMO_BABY_ID, '2023-08-17')
+            assert result == '09:50PM'
+
+    def test_update_most_recent_bottle_feed(self, ddb_client):
+        with create_daily_record_table(ddb_client):
+            api.add_bottle_feed(DEMO_BABY_ID, '2023-08-17', '2023-08-17T19:22:36', '80', None)
+            api.add_bottle_feed(DEMO_BABY_ID, '2023-08-17', '2023-08-17T19:22:36', '60', None)
+            api.update_most_recent_bottle_feed(DEMO_BABY_ID, '2023-08-17', '40')
+            result = api.get_most_recent_bottle_feed(DEMO_BABY_ID, '2023-08-17')
+            assert result[0] == '40'
+

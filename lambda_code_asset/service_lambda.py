@@ -8,7 +8,8 @@ from busy_baby.api import create_baby, add_growth_record, add_vaccine_record, ad
     get_most_recent_bottle_feed, get_total_bottle_feed_volume, get_total_bottle_feed_count, get_most_recent_nurse_feed_end, \
     get_total_nurse_feed_count, get_most_recent_solid_food, get_total_solid_food_count, get_all_solid_food_types, \
     get_most_recent_diaper_pee, get_total_diaper_pee_count, get_most_recent_diaper_poo, get_total_diaper_poo_count, \
-    get_most_recent_bath, get_most_recent_medicine, get_total_medicine_count
+    get_most_recent_bath, get_most_recent_medicine, get_total_medicine_count, delete_most_recent_sleep_record, \
+    update_most_recent_vaccine_date, update_most_recent_sleep_record, update_most_recent_bottle_feed
 from busy_baby.constants import DEMO_BABY_ID, FIRST_NAME, LAST_NAME, GENDER, BIRTHDAY, ADD_BABY, ADD_GROWTH, \
     ADD_VACCINE, ADD_SLEEP, ADD_FORMULA, ADD_NURSING, ADD_FOOD, ADD_BATH, ADD_MEDICATION, DELIVERY_TIME, GROWTH_DATE, \
     GROWTH_TYPE, GROWTH_DATA, VACCINE_DATE, VACCINE_TYPE, SLEEP_TIME, START_END, FORMULA_TIME, FORMULA_VOLUME, \
@@ -296,6 +297,32 @@ def dispatch(intent: str, slots: any):
             result = get_total_medicine_count(DEMO_BABY_ID, record_date)
             message = "Had medicine {} time(s)".format(result)
 
+        if intent == "deleteMostRecentSleepRecord":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d')
+            result = delete_most_recent_sleep_record(DEMO_BABY_ID, record_date)
+            message = "Delete most recent sleep record result: {}".format(result)
+
+        if intent == "updateMostRecentVaccineDate":
+            vaccine_date = getSlotVal(VACCINE_DATE)
+            result = update_most_recent_vaccine_date(DEMO_BABY_ID, vaccine_date)
+            message = "Update most recent vaccine date result: {}".format(result)
+
+        if intent == "updateMostRecentSleepRecord":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d')
+            sleep_time = getSlotVal(SLEEP_TIME)
+            start_end = getSlotVal(START_END)
+            start_time = sleep_time if start_end == "start" else None
+            end_time = sleep_time if start_end == "end" else None
+            result = update_most_recent_sleep_record(DEMO_BABY_ID, record_date, start_time, end_time)
+            message = "Update most recent sleep record result: {}".format(result)
+
+        if intent == "updateMostRecentBottleFeed":
+            record_date = datetime.utcnow().strftime('%Y-%m-%d')
+            formula_volume = getSlotVal(FORMULA_VOLUME)
+            result = update_most_recent_bottle_feed(DEMO_BABY_ID, record_date, formula_volume)
+            message = "Update most recent bottle feed result: {}".format(result)
+
+
     # Generate response
     response = {
         "sessionState": {
@@ -357,10 +384,10 @@ def dispatch(intent: str, slots: any):
     - getTotalMedicineCount(baby_id, date)
 
     - deleteMostRecentSleepRecord(baby_id)
-    - updateMostRecentSleepStartRecord(baby_id, start_time)**********
-    - updateMostRecentSleepEndRecord(baby_id, end_time)**********
-    - updateMostRecentBottleFeed(baby_id, volume, bottle_time)
-    - updateMostRecentVaccineDate...
+    - updateMostRecentVaccineDate(baby_id)
+    - updateMostRecentSleepRecord(baby_id, record_date, start_time)
+    - updateMostRecentBottleFeed(baby_id, record_date, volume)
+
 
 
     '''

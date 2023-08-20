@@ -101,7 +101,6 @@ def add_vaccine_record(baby_id, record_date, vaccine_type, vaccine_note):
 def add_sleep_record(baby_id, date, start_time, end_time, sleep_note):
     try:
         start_time = datetime.strptime(date + " " + start_time, "%Y-%m-%d %H:%M").isoformat()
-        end_time = datetime.strptime(date + " " + end_time, "%Y-%m-%d %H:%M").isoformat()
         if start_time:
             start_time = datetime.strptime(date + " " + start_time, "%Y-%m-%d %H:%M").isoformat()
 

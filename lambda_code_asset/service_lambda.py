@@ -317,7 +317,7 @@ def dispatch(intent: str, slots: any):
         result = update_most_recent_sleep_record(DEMO_BABY_ID, record_date, start_time, end_time)
         message = "Update most recent sleep record result: {}".format(result)
 
-    if intent == "updateMostRecentBottleFeed":  # "Update her last bottle feed volume to 40 ml"
+    if intent == "updateMostRecentBottleFeed":  # "Update her last bottle fed volume to 40 ml"
         record_date = datetime.utcnow().strftime('%Y-%m-%d')
         formula_volume = getSlotVal(FORMULA_VOLUME)
         result = update_most_recent_bottle_feed(DEMO_BABY_ID, record_date, formula_volume)

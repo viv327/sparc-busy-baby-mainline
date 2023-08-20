@@ -28,11 +28,6 @@ def dispatch(intent: str, slots: any):
     # dispatch to different service based on different intent
 
     if intent == ADD_BABY:
-        # first_name = slots[FIRST_NAME]["value"]["interpretedValue"]
-        # last_name = slots[LAST_NAME]["value"]["interpretedValue"]
-        # gender = slots[GENDER]["value"]["interpretedValue"]
-        # birthday = slots[BIRTHDAY]["value"]["interpretedValue"]
-        # delivery_time = slots[DELIVERY_TIME]["value"]["interpretedValue"]
         first_name = getSlotVal(FIRST_NAME)
         last_name = getSlotVal(LAST_NAME)
         gender = getSlotVal(GENDER)
@@ -44,23 +39,6 @@ def dispatch(intent: str, slots: any):
 
     if intent == ADD_GROWTH:
         record_date = slots[GROWTH_DATE]["value"]["interpretedValue"]
-        # if record_date == "today":
-        #     record_date = datetime.utcnow().strftime('%Y-%m-%d')  # convert current UTC date to strings
-        #
-        # if "Height" in slots and "value" in slots["Height"]:
-        #     height = slots["Height"]["value"]["interpretedValue"]
-        # else:
-        #     height = None  # because height is optional field, hence can be None if not provided by upstream (e.g, Lex)
-        #
-        # if "Weight" in slots and "value" in slots["Weight"]:
-        #     weight = slots["Weight"]["value"]["interpretedValue"]
-        # else:
-        #     weight = None
-        #
-        # if "HeadCircumference" in slots and "value" in slots["HeadCircumference"]:
-        #     head_circumference = slots["HeadCircumference"]["value"]["interpretedValue"]
-        # else:
-        #     head_circumference = None
 
         # create_growth_record only takes 3 slots, date, category and measured data.
         # might be different from the database schema
@@ -84,15 +62,6 @@ def dispatch(intent: str, slots: any):
 
     if intent == ADD_SLEEP:
         record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(SLEEP_DATE)
-        # if "StartTime" in slots and "value" in slots["StartTime"]:
-        #     start_time = slots["StartTime"]["value"]["interpretedValue"]
-        # else:
-        #     start_time = None
-        #
-        # if "EndTime" in slots and "value" in slots["EndTime"]:
-        #     end_time = slots["EndTime"]["value"]["interpretedValue"]
-        # else:
-        #     end_time = None
 
         # intent takes a slot "start_end" which lets user decide if the current record is a start or end time point, then enter the time in slot "sleep time"
         # not in to two slots as "start_time"/"end_time"
@@ -112,8 +81,6 @@ def dispatch(intent: str, slots: any):
         # in current bot design, we only manually set value for date, no such operation for time "now".
         # so if else only needed for date, not for time, as in the current design.
         formula_time = getSlotVal(FORMULA_TIME)
-        # if formula_time == "now":
-        #     formula_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S')
         formula_volume = getSlotVal(FORMULA_VOLUME)
         formula_note = getSlotVal(FORMULA_NOTE)
         result = add_bottle_feed(DEMO_BABY_ID, record_date, formula_time, formula_volume, formula_note)
@@ -248,86 +215,86 @@ def dispatch(intent: str, slots: any):
         message = "It was {} milliliters at {}".format(result[0], result[1])
 
     if intent == "getTotalBottleFeedVolume":  # for query: "How much formula has she had today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
+            FORMULA_DATE)
         result = get_total_bottle_feed_volume(DEMO_BABY_ID, record_date)
         message = "{} ounces in total".format(result)
 
     if intent == "getTotalBottleFeedCount":  # for query: "How many times has she had formula today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(
+            FORMULA_DATE)
         result = get_total_bottle_feed_count(DEMO_BABY_ID, record_date)
         message = "{} times".format(result)
 
     if intent == "getMostRecentNurseFeedEnd":  # for query: "When was the last time she was nurse fed?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(
+            NURSING_DATE)
         result = get_most_recent_nurse_feed_end(DEMO_BABY_ID, record_date)
         message = "Last woke up at {}".format(result)
 
     if intent == "getTotalNurseFeedCount":  # for query: "How many times has she been nurse fed today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(
+            NURSING_DATE)
         result = get_total_nurse_feed_count(DEMO_BABY_ID, record_date)
         message = "Nurse fed {} times".format(result)
 
     if intent == "getMostRecentSolidFood":  # for query: "What was the most recent solid food she had?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
+            FOOD_DATE)
         result = get_most_recent_solid_food(DEMO_BABY_ID, record_date)
         message = "Most recent solid food was {} at {}".format(result[0], result[1])
 
     if intent == "getTotalSolidFoodCount":  # for query: "How many times has she had solid food today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
+            FOOD_DATE)
         result = get_total_solid_food_count(DEMO_BABY_ID, record_date)
         message = "Had solid food {} times".format(result)
 
     if intent == "getAllSolidFoodTypes":  # for query: "What types of solid foods has she had today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(
+            FOOD_DATE)
         result = get_all_solid_food_types(DEMO_BABY_ID, record_date)
         message = "Solid food types: {}".format(result)
 
     if intent == "getMostRecentDiaperPee":  # for query: "When was her last pee-pee?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
+            DIAPER_DATE)
         result = get_most_recent_diaper_pee(DEMO_BABY_ID, record_date)
         message = "Last pee-pee at {}".format(result)
 
     if intent == "getTotalDiaperPeeCount":  # for query: "How many times has she peed today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
+            DIAPER_DATE)
         result = get_total_diaper_pee_count(DEMO_BABY_ID, record_date)
         message = "Peed {} times".format(result)
 
     if intent == "getMostRecentDiaperPoo":  # for query: "When was her last poo-poo?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
+            DIAPER_DATE)
         result = get_most_recent_diaper_poo(DEMO_BABY_ID, record_date)
         message = "Last poo-poo at {}".format(result)
 
     if intent == "getTotalDiaperPooCount":  # for query: "How many times has she pooped today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(
+            DIAPER_DATE)
         result = get_total_diaper_poo_count(DEMO_BABY_ID, record_date)
         message = "Pooped {} times".format(result)
 
     if intent == "getMostRecentBath":  # for query: "When did she bathed?" (Suppose she has bathed in the current day)
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(BATH_DATE) == "today" else getSlotVal(
+            BATH_DATE)
         result = get_most_recent_bath(DEMO_BABY_ID, record_date)
         message = "Last bathed at {}".format(result)
 
     if intent == "getMostRecentMedicine":  # for query: "What was the last medicine she took?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(MED_DATE) == "today" else getSlotVal(
+            MED_DATE)
         result = get_most_recent_medicine(DEMO_BABY_ID, record_date)
         message = "Last took {} at {}".format(result[0], result[1])
 
     if intent == "getTotalMedicineCount":  # for query: "How many times has she took medicine today?"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-            SLEEP_DATE)
+        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(MED_DATE) == "today" else getSlotVal(
+            MED_DATE)
         result = get_total_medicine_count(DEMO_BABY_ID, record_date)
         message = "Had medicine {} times".format(result)
 

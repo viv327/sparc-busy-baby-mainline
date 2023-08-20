@@ -75,7 +75,7 @@ def add_vaccine_record(baby_id, record_date, vaccine_type, vaccine_note):
         vaccine_record = Vaccine(
             record_date=record_date,
             vaccine_type=vaccine_type,
-            vaccine_note = vaccine_note
+            vaccine_note=vaccine_note
         )
 
         result = baby_profile_table.update_item(

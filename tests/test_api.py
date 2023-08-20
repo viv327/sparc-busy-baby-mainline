@@ -181,15 +181,16 @@ class TestAPI:
             assert retrieved_item['Item']['vaccine_record']['L'][0]['M']['record_date'] == {'S': '2023-08-16'}
             assert retrieved_item['Item']['vaccine_record']['L'][0]['M']['vaccine_type'] == {'S': 'DTaP'}
             assert retrieved_item['Item']['vaccine_record']['L'][0]['M']['vaccine_note'] == {'S': 'memo'}
+
     def test_add_sleep_record(self, ddb_client):
         with create_daily_record_table(ddb_client):
 
             # call API to put item in DDB table
 
-            api.add_sleep_record(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36', '2023-08-16T19:52:36', "memo")
+            # api.add_sleep_record(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36', '2023-08-16T19:52:36', "memo")
 
-            # api.add_sleep_record(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36', None)
-            # api.add_sleep_record(DEMO_BABY_ID, '2020-02-02', None, '2023-08-16T19:52:36')
+            api.add_sleep_record(DEMO_BABY_ID, '2020-02-02', '2023-08-16T19:22:36', None, "memo")
+            api.add_sleep_record(DEMO_BABY_ID, '2020-02-02', None, '2023-08-16T19:52:36', "memo")
 
 
             # retrieve from DDB table by key

@@ -1,14 +1,13 @@
 import boto3
 import logging
-import os
-import uuid
 import dateutil.parser
 from datetime import timedelta, datetime
 from .constants import BABY_PROFILE_DDB_TABLE, DAILY_RECORD_DDB_TABLE, DEMO_BABY_ID
 from .models.basic_info import Growth, BabyProfile, Vaccine
 from .models.daily_record import SleepRecord, BottleFeed, NurseFeed, SolidFood, DiaperPee, DiaperPoo, Bath, Medicine
 from .models.daily_record import DailyRecord
-from .persistance.ddb_item import BabyProfileDDBItemAttrs, BabyProfileDDBItem, DailyRecordDDBItemAttrs, DailyRecordDDBItem
+from .utils import format_timedelta
+from .persistance.ddb_item import BabyProfileDDBItem
 
 dynamodb = boto3.resource("dynamodb")  # create dynamodb client using boto3 API
 baby_profile_table = dynamodb.Table(BABY_PROFILE_DDB_TABLE)  # create dynamodb table handle
@@ -522,24 +521,7 @@ def get_most_recent_sleep_duration(baby_id, record_date):
     return result
 
 
-def format_timedelta(duration):
-    # helper function to format datetime.timedelta format time duration into user readable string
-    # seconds are ignored
-    hours, remainder = divmod(duration.seconds, 3600)
-    minutes, _ = divmod(remainder, 60)
 
-    formatted_duration = ""
-
-    if duration.days > 0:
-        formatted_duration += f"{duration.days} day{'s' if duration.days != 1 else ''} "
-
-    if hours > 0:
-        formatted_duration += f"{hours} hour{'s' if hours != 1 else ''} "
-
-    if minutes > 0:
-        formatted_duration += f"{minutes} minute{'s' if minutes != 1 else ''}"
-
-    return formatted_duration
 
 
 def get_total_sleep_time(baby_id, record_date):

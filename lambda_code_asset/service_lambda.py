@@ -20,7 +20,7 @@ from busy_baby.constants import DEMO_BABY_ID, FIRST_NAME, LAST_NAME, GENDER, BIR
 
 def dispatch(intent: str, slots: any):
     def getSlotVal(slotName):
-        return slots[slotName]["value"]["interpretedValue"]
+        return slots[slotName]["value"]["interpretedValue"] if slotName in slots else None
 
     response = {}
     message = ''

@@ -332,10 +332,13 @@ def dispatch(intent: str, slots: any):
 
     if intent == ENABLE_PREMIUM_FEATURE:  # e.g, user says "lex, enable my premium feature access"
         # bucket name comes from predefined constant value, only input should be user id, e.g, DEMO_BABY_ID
-        s3 = boto3.client('s3')
 
         # first check if bucket exists, if not, create it
-        exists = USER_ASSET_S3_BUCKET_NAME in [bucket.name for bucket in s3.buckets.all()]
+        s3_resource = boto3.resource('s3')
+        exists = s3_resource.Bucket(USER_ASSET_S3_BUCKET_NAME) in s3_resource.buckets.all()
+
+        # create S3 boto3 client
+        s3 = boto3.client('s3')
         if not exists:
             s3.create_bucket(Bucket=USER_ASSET_S3_BUCKET_NAME)
 

@@ -102,9 +102,6 @@ def add_sleep_record(baby_id, date, start_time, end_time, sleep_note):
     try:
         start_time = datetime.strptime(date + " " + start_time, "%Y-%m-%d %H:%M").isoformat()
         if start_time:
-            start_time = datetime.strptime(date + " " + start_time, "%Y-%m-%d %H:%M").isoformat()
-
-
             sleep_records = SleepRecord(
                 start_time=start_time,
                 end_time=end_time,

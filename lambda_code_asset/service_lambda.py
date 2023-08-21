@@ -335,7 +335,7 @@ def dispatch(intent: str, slots: any):
         s3 = boto3.client('s3')
 
         # first check if bucket exists, if not, create it
-        exists = s3.Bucket(USER_ASSET_S3_BUCKET_NAME) in s3.buckets.all()
+        exists = USER_ASSET_S3_BUCKET_NAME in [bucket.name for bucket in s3.buckets.all()]
         if not exists:
             s3.create_bucket(Bucket=USER_ASSET_S3_BUCKET_NAME)
 

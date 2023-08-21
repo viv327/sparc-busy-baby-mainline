@@ -102,7 +102,7 @@ def add_sleep_record(baby_id, date, start_time, end_time, sleep_note):
     try:
 
         if start_time:
-            start_time = datetime.strptime(date + " " + start_time, "%Y-%m-%d %H:%M").isoformat()
+            # start_time = datetime.strptime(date + " " + start_time, "%Y-%m-%d %H:%M").isoformat()
             sleep_records = SleepRecord(
                 start_time=start_time,
                 end_time=end_time,
@@ -123,7 +123,7 @@ def add_sleep_record(baby_id, date, start_time, end_time, sleep_note):
 
         else:  # start_time is None but not end_time
             # read the DDBi tem first, find the last element from the list, then update
-            end_time = datetime.strptime(date + " " + end_time, "%Y-%m-%d %H:%M").isoformat()
+            # end_time = datetime.strptime(date + " " + end_time, "%Y-%m-%d %H:%M").isoformat()
             item = daily_record_table.get_item(
                 Key={
                     "baby_id": baby_id,

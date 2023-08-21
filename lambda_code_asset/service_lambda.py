@@ -39,6 +39,7 @@ def dispatch(intent: str, slots: any):
         gender = getSlotVal(GENDER)
         birthday = getSlotVal(BIRTHDAY)
         delivery_time = getSlotVal(DELIVERY_TIME)
+        delivery_time = datetime.strptime(birthday + " " + delivery_time, "%Y-%m-%d %H:%M").isoformat()
 
         result = create_baby(first_name, last_name, gender, birthday, delivery_time)
         message = "Baby profile creation result: {}".format(result)
@@ -74,6 +75,7 @@ def dispatch(intent: str, slots: any):
         # intent takes a slot "start_end" which lets user decide if the current record is a start or end time point, then enter the time in slot "sleep time"
         # not in to two slots as "start_time"/"end_time"
         sleep_time = getSlotVal(SLEEP_TIME)
+        sleep_time = datetime.strptime(record_date + " " + sleep_time, "%Y-%m-%d %H:%M").isoformat()
         start_end = getSlotVal(START_END)
         sleep_note = getSlotVal(SLEEP_NOTE)
 
@@ -89,6 +91,7 @@ def dispatch(intent: str, slots: any):
         # in current bot design, we only manually set value for date, no such operation for time "now".
         # so if else only needed for date, not for time, as in the current design.
         formula_time = getSlotVal(FORMULA_TIME)
+        formula_time = datetime.strptime(record_date + " " + formula_time, "%Y-%m-%d %H:%M").isoformat()
         formula_volume = getSlotVal(FORMULA_VOLUME)
         formula_note = getSlotVal(FORMULA_NOTE)
         result = add_bottle_feed(DEMO_BABY_ID, record_date, formula_time, formula_volume, formula_note)
@@ -98,6 +101,7 @@ def dispatch(intent: str, slots: any):
         record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(NURSING_DATE) == "today" else getSlotVal(NURSING_DATE)
 
         nursing_time = getSlotVal(NURSING_TIME)
+        nursing_time = datetime.strptime(record_date + " " + nursing_time, "%Y-%m-%d %H:%M").isoformat()
         nursing_note = getSlotVal(NURSING_NOTE)
         start_end = getSlotVal(START_END)
 
@@ -110,6 +114,7 @@ def dispatch(intent: str, slots: any):
     if intent == ADD_FOOD:
         record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(FOOD_DATE) == "today" else getSlotVal(FOOD_DATE)
         food_time = getSlotVal(FOOD_TIME)
+        food_time = datetime.strptime(record_date + " " + food_time, "%Y-%m-%d %H:%M").isoformat()
         food_note = getSlotVal(FOOD_NOTE)
         # food_time = datetime.now(tz=timeZone).strftime('%Y-%m-%dT%H:%M:%S') if getSlotVal(FOOD_TIME)=="now" else getSlotVal(FOOD_TIME)
         food_type = getSlotVal(FOOD_TYPE)
@@ -120,6 +125,7 @@ def dispatch(intent: str, slots: any):
         diaper_type = getSlotVal(DIAPER_TYPE)
         record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(DIAPER_DATE) == "today" else getSlotVal(DIAPER_DATE)
         diaper_time = getSlotVal(DIAPER_TIME)
+        diaper_time = datetime.strptime(record_date + " " + diaper_time, "%Y-%m-%d %H:%M").isoformat()
         diaper_note = getSlotVal(DIAPER_NOTE)
         # diaper_time = datetime.now(tz=timeZone).strftime('%Y-%m-%dT%H:%M:%S') if getSlotVal(DIAPER_TIME) == "now" else getSlotVal(DIAPER_TIME)
         result = add_diaper_poo(DEMO_BABY_ID, record_date, diaper_time, diaper_note) if diaper_type == "poo" else add_diaper_pee(DEMO_BABY_ID, record_date, diaper_time, diaper_note)
@@ -128,6 +134,7 @@ def dispatch(intent: str, slots: any):
     if intent == ADD_BATH:
         record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(BATH_DATE) == "today" else getSlotVal(BATH_DATE)
         bath_time = getSlotVal(BATH_TIME)
+        bath_time = datetime.strptime(record_date + " " + bath_time, "%Y-%m-%d %H:%M").isoformat()
         bath_note = getSlotVal(BATH_NOTE)
         # bath_time = datetime.now(tz=timeZone).strftime('%Y-%m-%dT%H:%M:%S') if getSlotVal(BATH_TIME) == "now" else getSlotVal(BATH_TIME)
         result = add_bath(DEMO_BABY_ID, record_date, bath_time, bath_note)
@@ -136,6 +143,7 @@ def dispatch(intent: str, slots: any):
     if intent == ADD_MEDICATION:
         record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(MED_DATE) == "today" else getSlotVal(MED_DATE)
         med_time = getSlotVal(MED_TIME)
+        med_time = datetime.strptime(record_date + " " + med_time, "%Y-%m-%d %H:%M").isoformat()
         med_note = getSlotVal(MED_NOTE)
 
         # if user invoke the "add medication" intent, they should offer a medication type. should not be None

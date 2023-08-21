@@ -20,7 +20,7 @@ ADD_VACCINE = "createVaccineRecord"
 GET_RECORD = "getRecord"
 DELETE_RECORD = "deleteRecord"
 UPDATE_RECORD = "updateRecord"
-ENABLE_PREMIUM_FEATURE = "enablePremiumFeature"  # this is to demo AWS resource creation using Lex
+ENABLE_PREMIUM_FEATURE = "premiumFeature"  # this is to demo AWS resource creation using Lex
 
 # ADD_BABY = "createBaby"
 GENDER = "baby_gender"
@@ -110,6 +110,11 @@ RECORD_DATE = "record_date"
 
 # DELETE_RECORD = "deleteRecord"
 DELETE_TYPE = "delete_record_type"
+# RECORD_DATE = "record_date"
 
 # UPDATE_RECORD = "updateRecord"
 UPDATE_TYPE = "update_record_type"
+UPDATE_DATE = "update_date"
+UPDATE_TIME = "update_time"
+UPDATE_DATA = "update_date_unit"
+# START_END = "start_end"

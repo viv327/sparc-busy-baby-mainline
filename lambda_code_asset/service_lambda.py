@@ -2,7 +2,6 @@ import json
 from datetime import datetime
 
 import dateutil.tz
-from pytz import timezone
 import boto3
 
 from busy_baby.api import create_baby, add_growth_record, add_vaccine_record, add_bottle_feed, add_sleep_record, \
@@ -20,7 +19,8 @@ from busy_baby.constants import DEMO_BABY_ID, FIRST_NAME, LAST_NAME, GENDER, BIR
     NURSING_TIME, FOOD_TIME, FOOD_TYPE, ADD_DIAPER, DIAPER_TYPE, DIAPER_TIME, BATH_TIME, MED_TIME, MED_TYPE, SLEEP_DATE, \
     FORMULA_DATE, NURSING_DATE, FOOD_DATE, DIAPER_DATE, BATH_DATE, MED_DATE, MED_NOTE, BATH_NOTE, DIAPER_NOTE, \
     FOOD_NOTE, NURSING_NOTE, FORMULA_NOTE, SLEEP_NOTE, VACCINE_NOTE, GET_RECORD, RECORD_TYPE, RECORD_DATE, \
-    DELETE_RECORD, DELETE_TYPE, UPDATE_RECORD, UPDATE_TYPE, ENABLE_PREMIUM_FEATURE, USER_ASSET_S3_BUCKET_NAME
+    DELETE_RECORD, DELETE_TYPE, UPDATE_RECORD, UPDATE_TYPE, ENABLE_PREMIUM_FEATURE, USER_ASSET_S3_BUCKET_NAME, \
+    UPDATE_DATE, UPDATE_TIME, UPDATE_DATA
 
 
 def dispatch(intent: str, slots: any):
@@ -191,7 +191,7 @@ def dispatch(intent: str, slots: any):
             record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(RECORD_DATE) == "today" else getSlotVal(
                 RECORD_DATE)
             result = get_total_sleep_time(DEMO_BABY_ID, record_date)
-            message = "Slept for {} hours in total".format(result)
+            message = "Slept for {} in total".format(result)
 
         # if intent == "getTotalSleepCount":  # for query: "How many times has she slept today?"
         if record_type == "sleep_count":
@@ -308,8 +308,8 @@ def dispatch(intent: str, slots: any):
     if intent == DELETE_RECORD:
         delete_type = getSlotVal(DELETE_TYPE)
         if delete_type == "last_sleep": # "Delete her last sleep record"
-            record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-                    SLEEP_DATE)
+            record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(RECORD_DATE) == "today" else getSlotVal(
+                    RECORD_DATE)
             result = delete_most_recent_sleep_record(DEMO_BABY_ID, record_date)
             message = "Delete most recent sleep record result: {}".format(result)
 
@@ -317,13 +317,13 @@ def dispatch(intent: str, slots: any):
         update_type = getSlotVal(UPDATE_TYPE)
 
         if update_type == "last_vaccine_date":    # "Update her last vaccine date to yesterday"
-            vaccine_date = getSlotVal(VACCINE_DATE)
+            vaccine_date = getSlotVal(UPDATE_DATE)
             result = update_most_recent_vaccine_date(DEMO_BABY_ID, vaccine_date)
             message = "Update most recent vaccine date result: {}".format(result)
 
         if update_type == "last_sleep":   # "Update her last sleep start/end time to now"
             record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d')
-            sleep_time = getSlotVal(SLEEP_TIME)
+            sleep_time = getSlotVal(UPDATE_TIME)
             start_end = getSlotVal(START_END)
             start_time = sleep_time if start_end == "start" else None
             end_time = sleep_time if start_end == "finish" else None
@@ -332,7 +332,7 @@ def dispatch(intent: str, slots: any):
 
         if update_type == "last_formula_vol":   # "Update her last bottle fed volume to 40 ml"
             record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d')
-            formula_volume = getSlotVal(FORMULA_VOLUME)
+            formula_volume = getSlotVal(UPDATE_DATA)
             result = update_most_recent_bottle_feed(DEMO_BABY_ID, record_date, formula_volume)
             message = "Update most recent bottle feed result: {}".format(result)
 

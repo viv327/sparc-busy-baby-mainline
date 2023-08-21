@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from pytz import timezone
 import boto3
 
 from busy_baby.api import create_baby, add_growth_record, add_vaccine_record, add_bottle_feed, add_sleep_record, \
@@ -63,8 +64,9 @@ def dispatch(intent: str, slots: any):
         message = "Update baby vaccine record result: {}".format(result)
 
     if intent == ADD_SLEEP:
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(SLEEP_DATE)
+        # record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(SLEEP_DATE)
 
+        record_date = datetime.now(timezone('US/Eastern')).strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(SLEEP_DATE)
         # intent takes a slot "start_end" which lets user decide if the current record is a start or end time point, then enter the time in slot "sleep time"
         # not in to two slots as "start_time"/"end_time"
         sleep_time = getSlotVal(SLEEP_TIME)
@@ -439,9 +441,9 @@ def main(event, context):
     intent = event["sessionState"]["intent"]["name"]
     slots = event["sessionState"]["intent"]["slots"]
 
-    print(event["invocationSource"])
-    print(intent)
-    print(slots)
+    # print(event["invocationSource"])
+    # print(intent)
+    # print(slots)
 
     if event['invocationSource'] == 'DialogCodeHook':
         response = delegate(intent, slots)

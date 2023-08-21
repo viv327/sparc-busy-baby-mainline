@@ -15,7 +15,8 @@ from busy_baby.constants import DEMO_BABY_ID, FIRST_NAME, LAST_NAME, GENDER, BIR
     GROWTH_TYPE, GROWTH_DATA, VACCINE_DATE, VACCINE_TYPE, SLEEP_TIME, START_END, FORMULA_TIME, FORMULA_VOLUME, \
     NURSING_TIME, FOOD_TIME, FOOD_TYPE, ADD_DIAPER, DIAPER_TYPE, DIAPER_TIME, BATH_TIME, MED_TIME, MED_TYPE, SLEEP_DATE, \
     FORMULA_DATE, NURSING_DATE, FOOD_DATE, DIAPER_DATE, BATH_DATE, MED_DATE, MED_NOTE, BATH_NOTE, DIAPER_NOTE, \
-    FOOD_NOTE, NURSING_NOTE, FORMULA_NOTE, SLEEP_NOTE, VACCINE_NOTE, GET_RECORD, RECORD_TYPE, RECORD_DATE
+    FOOD_NOTE, NURSING_NOTE, FORMULA_NOTE, SLEEP_NOTE, VACCINE_NOTE, GET_RECORD, RECORD_TYPE, RECORD_DATE, \
+    DELETE_RECORD, DELETE_TYPE, UPDATE_RECORD, UPDATE_TYPE
 
 
 def dispatch(intent: str, slots: any):
@@ -297,31 +298,36 @@ def dispatch(intent: str, slots: any):
             result = get_total_medicine_count(DEMO_BABY_ID, record_date)
             message = "Had medicine {} time(s)".format(result)
 
-    if intent == "deleteMostRecentSleepRecord":  # "Delete her last sleep record"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
-                SLEEP_DATE)
-        result = delete_most_recent_sleep_record(DEMO_BABY_ID, record_date)
-        message = "Delete most recent sleep record result: {}".format(result)
+    if intent == DELETE_RECORD:
+        delete_type = getSlotVal(DELETE_TYPE)
+        if delete_type == "last_sleep": # "Delete her last sleep record"
+            record_date = datetime.utcnow().strftime('%Y-%m-%d') if getSlotVal(SLEEP_DATE) == "today" else getSlotVal(
+                    SLEEP_DATE)
+            result = delete_most_recent_sleep_record(DEMO_BABY_ID, record_date)
+            message = "Delete most recent sleep record result: {}".format(result)
 
-    if intent == "updateMostRecentVaccineDate":    # "Update her last vaccine date to yesterday"
-        vaccine_date = getSlotVal(VACCINE_DATE)
-        result = update_most_recent_vaccine_date(DEMO_BABY_ID, vaccine_date)
-        message = "Update most recent vaccine date result: {}".format(result)
+    if intent == UPDATE_RECORD:
+        update_type = getSlotVal(UPDATE_TYPE)
 
-    if intent == "updateMostRecentSleepRecord":  # "Update her last sleep start/end time to now"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d')
-        sleep_time = getSlotVal(SLEEP_TIME)
-        start_end = getSlotVal(START_END)
-        start_time = sleep_time if start_end == "start" else None
-        end_time = sleep_time if start_end == "finish" else None
-        result = update_most_recent_sleep_record(DEMO_BABY_ID, record_date, start_time, end_time)
-        message = "Update most recent sleep record result: {}".format(result)
+        if update_type == "last_vaccine_date":    # "Update her last vaccine date to yesterday"
+            vaccine_date = getSlotVal(VACCINE_DATE)
+            result = update_most_recent_vaccine_date(DEMO_BABY_ID, vaccine_date)
+            message = "Update most recent vaccine date result: {}".format(result)
 
-    if intent == "updateMostRecentBottleFeed":  # "Update her last bottle fed volume to 40 ml"
-        record_date = datetime.utcnow().strftime('%Y-%m-%d')
-        formula_volume = getSlotVal(FORMULA_VOLUME)
-        result = update_most_recent_bottle_feed(DEMO_BABY_ID, record_date, formula_volume)
-        message = "Update most recent bottle feed result: {}".format(result)
+        if update_type == "last_sleep":   # "Update her last sleep start/end time to now"
+            record_date = datetime.utcnow().strftime('%Y-%m-%d')
+            sleep_time = getSlotVal(SLEEP_TIME)
+            start_end = getSlotVal(START_END)
+            start_time = sleep_time if start_end == "start" else None
+            end_time = sleep_time if start_end == "finish" else None
+            result = update_most_recent_sleep_record(DEMO_BABY_ID, record_date, start_time, end_time)
+            message = "Update most recent sleep record result: {}".format(result)
+
+        if update_type == "last_formula_vol":   # "Update her last bottle fed volume to 40 ml"
+            record_date = datetime.utcnow().strftime('%Y-%m-%d')
+            formula_volume = getSlotVal(FORMULA_VOLUME)
+            result = update_most_recent_bottle_feed(DEMO_BABY_ID, record_date, formula_volume)
+            message = "Update most recent bottle feed result: {}".format(result)
 
 
     # Generate response
@@ -426,5 +432,6 @@ def main(event, context):
     if event["invocationSource"] == "FulfillmentCodeHook":
         response = dispatch(intent, slots)
 
+    # response = dispatch(intent, slots)
     return response
 

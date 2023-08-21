@@ -17,6 +17,8 @@ ADD_SICK = "createSickRecord"
 ADD_SLEEP = "createSleepRecord"
 ADD_VACCINE = "createVaccineRecord"
 GET_RECORD = "getRecord"
+DELETE_RECORD = "deleteRecord"
+UPDATE_RECORD = "updateRecord"
 
 # ADD_BABY = "createBaby"
 GENDER = "baby_gender"
@@ -103,3 +105,9 @@ VACCINE_NOTE = "vaccine_note"
 # GET_RECORD = "getRecord"
 RECORD_TYPE = "get_record_type"
 RECORD_DATE = "record_date"
+
+# DELETE_RECORD = "deleteRecord"
+DELETE_TYPE = "delete_record_type"
+
+# UPDATE_RECORD = "updateRecord"
+UPDATE_TYPE = "update_record_type"

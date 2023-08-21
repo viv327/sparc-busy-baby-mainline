@@ -2,6 +2,7 @@
 DEMO_BABY_ID = "003"
 BABY_PROFILE_DDB_TABLE = 'SparcBusyBabyProfile'
 DAILY_RECORD_DDB_TABLE = 'SparcBusyBabyDailyRecord'
+USER_ASSET_S3_BUCKET_NAME = "busy-baby-user-asset-bucket"
 
 ADD_BABY = "createBaby"
 ADD_BATH = "createBathRecord"
@@ -19,6 +20,7 @@ ADD_VACCINE = "createVaccineRecord"
 GET_RECORD = "getRecord"
 DELETE_RECORD = "deleteRecord"
 UPDATE_RECORD = "updateRecord"
+ENABLE_PREMIUM_FEATURE = "enablePremiumFeature"  # this is to demo AWS resource creation using Lex
 
 # ADD_BABY = "createBaby"
 GENDER = "baby_gender"

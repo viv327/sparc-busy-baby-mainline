@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import boto3
 
 from busy_baby.api import create_baby, add_growth_record, add_vaccine_record, add_bottle_feed, add_sleep_record, \
     add_nurse_feed, add_solid_food, add_diaper_pee, add_diaper_poo, add_bath, add_medicine, get_most_recent_height, \
@@ -16,7 +17,7 @@ from busy_baby.constants import DEMO_BABY_ID, FIRST_NAME, LAST_NAME, GENDER, BIR
     NURSING_TIME, FOOD_TIME, FOOD_TYPE, ADD_DIAPER, DIAPER_TYPE, DIAPER_TIME, BATH_TIME, MED_TIME, MED_TYPE, SLEEP_DATE, \
     FORMULA_DATE, NURSING_DATE, FOOD_DATE, DIAPER_DATE, BATH_DATE, MED_DATE, MED_NOTE, BATH_NOTE, DIAPER_NOTE, \
     FOOD_NOTE, NURSING_NOTE, FORMULA_NOTE, SLEEP_NOTE, VACCINE_NOTE, GET_RECORD, RECORD_TYPE, RECORD_DATE, \
-    DELETE_RECORD, DELETE_TYPE, UPDATE_RECORD, UPDATE_TYPE
+    DELETE_RECORD, DELETE_TYPE, UPDATE_RECORD, UPDATE_TYPE, ENABLE_PREMIUM_FEATURE, USER_ASSET_S3_BUCKET_NAME
 
 
 def dispatch(intent: str, slots: any):
@@ -329,6 +330,19 @@ def dispatch(intent: str, slots: any):
             result = update_most_recent_bottle_feed(DEMO_BABY_ID, record_date, formula_volume)
             message = "Update most recent bottle feed result: {}".format(result)
 
+    if intent == ENABLE_PREMIUM_FEATURE:  # e.g, user says "lex, enable my premium feature access"
+        # bucket name comes from predefined constant value, only input should be user id, e.g, DEMO_BABY_ID
+        s3 = boto3.client('s3')
+
+        # first check if bucket exists, if not, create it
+        exists = s3.Bucket(USER_ASSET_S3_BUCKET_NAME) in s3.buckets.all()
+        if not exists:
+            s3.create_bucket(Bucket=USER_ASSET_S3_BUCKET_NAME)
+
+        # create sub-folder inside the bucket based on user id
+        s3.put_object(Bucket=USER_ASSET_S3_BUCKET_NAME, Key=(DEMO_BABY_ID + '/'))
+
+        message = "Successfully enabled the premium feature."
 
     # Generate response
     response = {

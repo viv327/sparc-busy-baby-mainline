@@ -3,8 +3,8 @@ import subprocess
 
 import aws_cdk
 from aws_cdk import (
-    BundlingOptions,
     Stack,
+    aws_iam,
     aws_lambda,
     aws_s3,
     aws_dynamodb
@@ -33,6 +33,10 @@ class ResourceStack(Stack):
                                        code=aws_lambda.Code.from_asset('./lambda_code_asset'),
                                        handler="service_lambda.main",
                                        timeout=aws_cdk.Duration.minutes(1))
+
+        # Grant S3 full access to Lambda role (so that it can create bucket/object etc)
+        s3_full_access = aws_iam.ManagedPolicy.from_aws_managed_policy_name('AmazonS3FullAccess')
+        function.role.add_managed_policy(s3_full_access)
 
         # S3 bucket
         bucket = aws_s3.Bucket(self, "SparcBusyBabyBucket", versioned=True,

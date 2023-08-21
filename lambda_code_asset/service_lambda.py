@@ -321,9 +321,10 @@ def dispatch(intent: str, slots: any):
             result = update_most_recent_vaccine_date(DEMO_BABY_ID, vaccine_date)
             message = "Update most recent vaccine date result: {}".format(result)
 
-        if update_type == "last_sleep":   # "Update her last sleep start/end time to now"
+        if update_type == "last_sleep":   # "update start/end time of last sleep to now"
             record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d')
             sleep_time = getSlotVal(UPDATE_TIME)
+            sleep_time = datetime.strptime(record_date + " " + sleep_time, "%Y-%m-%d %H:%M").isoformat()
             start_end = getSlotVal(START_END)
             start_time = sleep_time if start_end == "start" else None
             end_time = sleep_time if start_end == "finish" else None

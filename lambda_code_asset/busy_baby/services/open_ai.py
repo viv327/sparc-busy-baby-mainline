@@ -1,4 +1,5 @@
 import openai
+import json
 import boto3
 from botocore.exceptions import ClientError
 
@@ -24,12 +25,12 @@ def _get_api_key():
         raise e
 
     # Decrypts secret using the associated KMS key.
-    return get_secret_value_response['SecretString']
+    return json.loads(get_secret_value_response['SecretString'])
 
 
 def get_openai_response(user_utterance):
     # First, retrieve API key from AWS Secret Manager and set it to openai API
-    openai.api_key = _get_api_key()
+    openai.api_key = _get_api_key()['openai']
 
     # Construct prompt
     messages = [

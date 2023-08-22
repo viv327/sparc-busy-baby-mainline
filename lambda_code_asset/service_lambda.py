@@ -27,7 +27,8 @@ from busy_baby.constants import DEMO_BABY_ID, FIRST_NAME, LAST_NAME, GENDER, BIR
     FORMULA_DATE, NURSING_DATE, FOOD_DATE, DIAPER_DATE, BATH_DATE, MED_DATE, MED_NOTE, BATH_NOTE, DIAPER_NOTE, \
     FOOD_NOTE, NURSING_NOTE, FORMULA_NOTE, SLEEP_NOTE, VACCINE_NOTE, GET_RECORD, RECORD_TYPE, RECORD_DATE, \
     DELETE_RECORD, DELETE_TYPE, UPDATE_RECORD, UPDATE_TYPE, ENABLE_PREMIUM_FEATURE, USER_ASSET_S3_BUCKET_NAME, \
-    UPDATE_DATE, UPDATE_TIME, UPDATE_DATA
+    UPDATE_DATE, UPDATE_TIME, UPDATE_DATA, CONSULT_AI, USER_UTTERANCE
+from busy_baby.services.open_ai import get_openai_response
 
 
 def dispatch(intent: str, slots: any):
@@ -369,6 +370,10 @@ def dispatch(intent: str, slots: any):
 
         message = "Successfully enabled the premium feature."
 
+    if intent == CONSULT_AI:
+        user_utterance = getSlotVal(USER_UTTERANCE)
+        message = get_openai_response(user_utterance)
+
     # Generate response
     response = {
         "sessionState": {
@@ -440,7 +445,7 @@ def dispatch(intent: str, slots: any):
     '''
     # TODO: add more intents here, each with a handling function
 
-    textToSpeech(message)
+    text_to_speech(message)
     return response
 
 
@@ -456,7 +461,9 @@ def delegate(intent: str, slots: any):
             }
         }
     }
-def textToSpeech(message):
+
+
+def text_to_speech(message):
     # Create a client using the credentials and region defined in the [adminuser]
     # section of the AWS credentials file (~/.aws/credentials).
     session = Session(profile_name="adminuser")
@@ -501,6 +508,7 @@ def textToSpeech(message):
         # The following works on macOS and Linux. (Darwin = mac, xdg-open = linux).
         opener = "open" if sys.platform == "darwin" else "xdg-open"
         subprocess.call([opener, output])
+
 
 def main(event, context):
     print('request: {}'.format(json.dumps(event)))

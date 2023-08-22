@@ -71,7 +71,7 @@ def get_openai_response(baby_id, user_utterance):
         },
         {
             'role': 'user',
-            'content': _construct_prompt
+            'content': prompt
         }
     ]
 

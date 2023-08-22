@@ -47,8 +47,8 @@ def _construct_prompt(baby_id, user_utterance):
         first_name=baby_profile.first_name,
         birthday=baby_profile.birthday,
         gender=baby_profile.gender,
-        height=baby_profile.height,
-        weight=baby_profile.weight,
+        height=baby_profile.growth_record[-1].height,
+        weight=baby_profile.growth_record[-1].weight,
         daily_sleep_time=daily_sleep_time,
         daily_milk_volume=daily_milk_volume,
         user_utterance=user_utterance

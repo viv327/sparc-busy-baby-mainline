@@ -25,6 +25,13 @@ def format_timedelta(duration):
     return formatted_duration
 
 
+# def format_date_and_time(date, time):
+#     date_obj = datetime.strptime(date, "%Y-%m-%d").date()
+#     time_obj = datetime.strptime(time, "%H:%M").time()
+#     combined_datetime = datetime.combine(date_obj, time_obj)
+#     format_datetime = combined_datetime.isoformat()
+#     return format_datetime
+
 # def calculate_daily_sleep_time(baby_id):
 #     """
 #     e.g, from today, get last 3 days, for each day, call get_total_sleep_time, then finally calculate the result and return

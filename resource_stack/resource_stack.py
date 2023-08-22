@@ -40,10 +40,12 @@ class ResourceStack(Stack):
 
         # Grant permission for AWS Secret Manager
         policy = aws_iam.PolicyStatement(
+            effect=aws_iam.Effect.ALLOW,
             actions=[
                 "secretsmanager:GetSecretValue",
                 "secretsmanager:DescribeSecret",
-                "secretsmanager:ListSecrets"
+                "secretsmanager:ListSecrets",
+                "kms:Decrypt"
             ],
             resources=["*"])
         function.add_to_role_policy(policy)

@@ -445,7 +445,7 @@ def dispatch(intent: str, slots: any):
     '''
     # TODO: add more intents here, each with a handling function
 
-    text_to_speech(message)
+    # text_to_speech(message)
     return response
 
 

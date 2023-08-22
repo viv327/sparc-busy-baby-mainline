@@ -29,7 +29,7 @@ from busy_baby.constants import DEMO_BABY_ID, FIRST_NAME, LAST_NAME, GENDER, BIR
     FOOD_NOTE, NURSING_NOTE, FORMULA_NOTE, SLEEP_NOTE, VACCINE_NOTE, GET_RECORD, RECORD_TYPE, RECORD_DATE, \
     DELETE_RECORD, DELETE_TYPE, UPDATE_RECORD, UPDATE_TYPE, ENABLE_PREMIUM_FEATURE, USER_ASSET_S3_BUCKET_NAME, \
     UPDATE_DATE, UPDATE_TIME, UPDATE_DATA, CONSULT_AI, USER_UTTERANCE
-from busy_baby.utils import format_timedelta, format_date_and_time
+from busy_baby.utils import format_timedelta
 from busy_baby.services.open_ai import get_openai_response
 
 

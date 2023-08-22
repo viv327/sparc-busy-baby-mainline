@@ -120,4 +120,4 @@ UPDATE_TIME = "update_time"
 UPDATE_DATA = "update_date_unit"
 # START_END = "start_end"
 
-USER_UTTERANCE = "consult_ai_user_utterance"
+USER_UTTERANCE = "user_utterance"

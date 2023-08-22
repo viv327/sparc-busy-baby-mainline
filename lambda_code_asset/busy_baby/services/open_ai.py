@@ -36,11 +36,11 @@ def get_openai_response(user_utterance):
     messages = [
         {
             'role': 'system',
-            'content': 'Emma was born on 2020-01-01, gender female, height 85 cm, weight 28 pounds.'
+            'content': 'You are a kind helpful assistant.'
         },
         {
             'role': 'user',
-            'content': 'The parent asks "{}?". Provide a concise answer.'.format(user_utterance)
+            'content': 'Emma was born on 2020-01-01, gender female, height 85 cm, weight 28 pounds. The parent asks "{}?". Provide a concise answer.'.format(user_utterance)
         }
     ]
 

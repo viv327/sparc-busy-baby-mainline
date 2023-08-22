@@ -1,7 +1,9 @@
 import openai
 import json
 import boto3
+from datetime import datetime
 from botocore.exceptions import ClientError
+from ..api import get_baby_profile, calculate_daily_sleep_time, calculate_daily_milk_volume
 
 
 def _get_api_key():
@@ -28,11 +30,40 @@ def _get_api_key():
     return json.loads(get_secret_value_response['SecretString'])
 
 
-def get_openai_response(user_utterance):
+def _construct_prompt(baby_id, user_utterance):
+
+    # retrieve baby_profile based on baby_id
+    baby_profile = get_baby_profile(baby_id)
+
+    daily_sleep_time = calculate_daily_sleep_time(baby_id)
+    daily_milk_volume = calculate_daily_milk_volume(baby_id)
+
+    today = datetime.utcnow().strftime("%Y-%m-%d")
+
+    prompt_template = '''
+        Today is {today}. {first_name} was born on {birthday}, gender {gender}, height {height} inches, weight {weight} pounds, sleeps {daily_sleep_time} per day, drinks {daily_milk_volume} ml milk per day.
+        Provide a natural and concise answer to this question by the parent: {user_utterance}'''.format(
+        today=today,
+        first_name=baby_profile.first_name,
+        birthday=baby_profile.birthday,
+        gender=baby_profile.gender,
+        height=baby_profile.height,
+        weight=baby_profile.weight,
+        daily_sleep_time=daily_sleep_time,
+        daily_milk_volume=daily_milk_volume,
+        user_utterance=user_utterance
+    )
+    return prompt_template
+
+
+def get_openai_response(baby_id, user_utterance):
     # First, retrieve API key from AWS Secret Manager and set it to openai API
     openai.api_key = _get_api_key()['openai']
 
     # Construct prompt
+    prompt = _construct_prompt(baby_id, user_utterance)
+    print(prompt)
+
     messages = [
         {
             'role': 'system',
@@ -40,7 +71,7 @@ def get_openai_response(user_utterance):
         },
         {
             'role': 'user',
-            'content': 'Emma was born on 2020-01-01, gender female, height 85 cm, weight 28 pounds. The parent asks "{}?". Provide a concise answer.'.format(user_utterance)
+            'content': _construct_prompt
         }
     ]
 

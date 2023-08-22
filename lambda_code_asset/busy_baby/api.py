@@ -381,6 +381,16 @@ def add_medicine(baby_id, date, time, med_type, med_note):
         raise e
 
 
+def get_baby_profile(baby_id):
+    item = baby_profile_table.get_item(
+        Key={
+            "baby_id": baby_id,
+        }
+    )['Item']
+    baby_profile = BabyProfile(**item)
+    return baby_profile
+
+
 def get_most_recent_height(baby_id):
     item = baby_profile_table.get_item(
         Key={
@@ -523,6 +533,7 @@ def get_most_recent_sleep_duration(baby_id, record_date):
             break
     return result
 
+
 def get_total_sleep_time(baby_id, record_date):
     item = daily_record_table.get_item(
         Key={
@@ -540,9 +551,9 @@ def get_total_sleep_time(baby_id, record_date):
             last_sleep_start = daily_record.sleep_records[i].start_time
             last_sleep_end = daily_record.sleep_records[i].end_time
             total_sleep_time += dateutil.parser.parse(last_sleep_end) - dateutil.parser.parse(last_sleep_start)
-    result = format_timedelta(total_sleep_time)
+    # result = format_timedelta(total_sleep_time)
 
-    return result
+    return total_sleep_time
 
 
 def get_total_sleep_count(baby_id, record_date):
@@ -931,3 +942,35 @@ def update_most_recent_bottle_feed(baby_id, record_date, formula_volume):
     logger.info(result)
     return "Success"
 
+
+def calculate_daily_sleep_time(baby_id):
+    """
+    e.g, from today, get last 3 days, for each day, call get_total_sleep_time, then finally calculate the result and return
+    """
+    # timeZone = dateutil.tz.gettz('US/Eastern')
+    # record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d')
+    total_sleep_time = timedelta()
+    today = datetime.today()
+    today_format = today.strftime('%Y-%m-%d')
+    total_sleep_time += get_total_sleep_time(baby_id, today_format)
+    for i in range(2):
+        day = today - timedelta(days=i)
+        day_format = day.strftime('%Y-%m-%d')
+        total_sleep_time += get_total_sleep_time(baby_id, day_format)
+    result = format_timedelta(total_sleep_time)
+    return result
+
+
+def calculate_daily_milk_volume(baby_id):
+    """
+    e.g, from today, get last 3 days, for each day, call get_total_bottle_feed_volume, then finally calculate the result and return
+    """
+    total_bottle_volume = 0
+    today = datetime.today()
+    today_format = today.strftime('%Y-%m-%d')
+    total_bottle_volume += int(get_total_bottle_feed_volume(baby_id, today_format))
+    for i in range(2):
+        day = today - timedelta(days=i)
+        day_format = day.strftime('%Y-%m-%d')
+        total_bottle_volume += int(get_total_bottle_feed_volume(baby_id, day_format))
+    return str(total_bottle_volume)

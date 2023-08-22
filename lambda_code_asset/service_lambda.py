@@ -11,6 +11,7 @@ import sys
 import subprocess
 from tempfile import gettempdir
 
+
 from busy_baby.api import create_baby, add_growth_record, add_vaccine_record, add_bottle_feed, add_sleep_record, \
     add_nurse_feed, add_solid_food, add_diaper_pee, add_diaper_poo, add_bath, add_medicine, get_most_recent_height, \
     get_most_recent_weight, get_most_recent_head_circumference, get_most_recent_vaccine, get_most_recent_sleep_start, \
@@ -28,6 +29,7 @@ from busy_baby.constants import DEMO_BABY_ID, FIRST_NAME, LAST_NAME, GENDER, BIR
     FOOD_NOTE, NURSING_NOTE, FORMULA_NOTE, SLEEP_NOTE, VACCINE_NOTE, GET_RECORD, RECORD_TYPE, RECORD_DATE, \
     DELETE_RECORD, DELETE_TYPE, UPDATE_RECORD, UPDATE_TYPE, ENABLE_PREMIUM_FEATURE, USER_ASSET_S3_BUCKET_NAME, \
     UPDATE_DATE, UPDATE_TIME, UPDATE_DATA, CONSULT_AI, USER_UTTERANCE
+from busy_baby.utils import format_timedelta
 from busy_baby.services.open_ai import get_openai_response
 
 
@@ -200,13 +202,15 @@ def dispatch(intent: str, slots: any):
             record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(RECORD_DATE) == "today" else getSlotVal(
                 RECORD_DATE)
             result = get_most_recent_sleep_duration(DEMO_BABY_ID, record_date)
+            # result = format_timedelta(duration)
             message = "Last slept for {}".format(result)
 
         # if intent == "getTotalSleepTime":  # for query: "How long did she sleep in total today?"
         if record_type == "total_sleep":
             record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(RECORD_DATE) == "today" else getSlotVal(
                 RECORD_DATE)
-            result = get_total_sleep_time(DEMO_BABY_ID, record_date)
+            duration = get_total_sleep_time(DEMO_BABY_ID, record_date)
+            result = format_timedelta(duration)
             message = "Slept for {} in total".format(result)
 
         # if intent == "getTotalSleepCount":  # for query: "How many times has she slept today?"
@@ -372,7 +376,7 @@ def dispatch(intent: str, slots: any):
 
     if intent == CONSULT_AI:
         user_utterance = getSlotVal(USER_UTTERANCE)
-        message = get_openai_response(user_utterance)
+        message = get_openai_response(DEMO_BABY_ID, user_utterance)
 
     # Generate response
     response = {
@@ -395,55 +399,6 @@ def dispatch(intent: str, slots: any):
             }
         ]
     }
-
-
-    '''
-    - createBaby(first_name, last_name, gender, birthday)x
-    - addGrowthRecord(baby_id, record_date, height, weight, head_circumference)
-    - addVaccineRecord(baby_id, record_date, vaccine_type)
-    - addSleepRecord(baby_id, date, start_time, end_time)
-    - addBottleFeed(baby_id, date, bottle_time, volume)
-    - addNurseFeed(baby_id, date, start_time, end_time)
-    - addSolidFood(baby_id, date, food_time, food_type)
-    - addDiaperPee(baby_id, date, pee_time)
-    - addDiaperPoo(baby_id, date, poo_time)
-    - addBath(baby_id, date, bath_time)
-    - addMedicine(baby_id, date, medicine_time, medicine_type)
-
-    - getMostRecentHeight(baby_id)
-    - getMostRecentWeight(baby_id)
-    - getMostRecentHeadCircumference(baby_id)
-    - getMostRecentVaccine(baby_id)
-    - getMostRecentSleepStart(baby_id, date)
-    - getMostRecentSleepEnd(baby_id, date)
-    - getMostRecentSleepDuration(baby_id, date)
-    - getTotalSleepTime(baby_id, date)
-    - getTotalSleepCount(baby_id, date)
-    - getMostRecentBottleFeed(baby_id, date)
-    - getTotalBottleFeedVolume(baby_id, date)
-    - getTotalBottleFeedCount(baby_id, date)
-    - getMostRecentNurseFeedEnd(baby_id, date)
-    - getTotalNurseFeedCount(baby_id, date)
-    - getMostRecentSolidFood(baby_id, date)
-    - getTotalSolidFoodCount(baby_id, date)
-    - getAllSolidFoodTypes(baby_id, date)
-    - getMostRecentDiaperPee(baby_id, date)
-    - getTotalDiaperPeeCount(baby_id, date)
-    - getMostRecentDiaperPoo(baby_id, date)
-    - getTotalDiaperPooCount(baby_id, date)
-    - getMostRecentBath(baby_id, date)
-    - getMostRecentMedicine(baby_id, date)
-    - getTotalMedicineCount(baby_id, date)
-
-    - deleteMostRecentSleepRecord(baby_id)
-    - updateMostRecentVaccineDate(baby_id)
-    - updateMostRecentSleepRecord(baby_id, record_date, start_time)
-    - updateMostRecentBottleFeed(baby_id, record_date, volume)
-
-
-
-    '''
-    # TODO: add more intents here, each with a handling function
 
     # text_to_speech(message)
     return response

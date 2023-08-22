@@ -38,6 +38,16 @@ class ResourceStack(Stack):
         s3_full_access = aws_iam.ManagedPolicy.from_aws_managed_policy_name('AmazonS3FullAccess')
         function.role.add_managed_policy(s3_full_access)
 
+        # Grant permission for AWS Secret Manager
+        policy = aws_iam.PolicyStatement(
+            actions=[
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+                "secretsmanager:ListSecrets"
+            ],
+            resources=["*"])
+        function.add_to_role_policy(policy)
+
         # S3 bucket
         bucket = aws_s3.Bucket(self, "SparcBusyBabyBucket", versioned=True,
                                bucket_name="demo-bucket-for-sparc-aws-code-deploy",

@@ -374,7 +374,7 @@ def dispatch(intent: str, slots: any):
         # create sub-folder inside the bucket based on user id
         s3.put_object(Bucket=USER_ASSET_S3_BUCKET_NAME, Key=(DEMO_BABY_ID + '/'))
 
-        message = "Successfully enabled the premium feature."
+        message = "Sure. Successfully enabled the premium feature."
 
     if intent == CONSULT_AI:
         user_utterance = getSlotVal(USER_UTTERANCE)

@@ -379,6 +379,13 @@ def dispatch(intent: str, slots: any):
         user_utterance = getSlotVal(USER_UTTERANCE)
         message = get_openai_response(DEMO_BABY_ID, user_utterance)
 
+    actionType = ""
+    if intent == ADD_GROWTH or intent == ADD_VACCINE or intent == ADD_MEDICATION:
+        actionType = "Delegate"
+    else:
+        actionType = "Close"
+
+
     # Generate response
     response = {
         "sessionState": {
@@ -401,7 +408,6 @@ def dispatch(intent: str, slots: any):
         ]
     }
 
-    # text_to_speech(message)
     return response
 
 
@@ -483,5 +489,8 @@ def main(event, context):
         response = dispatch(intent, slots)
 
     # response = dispatch(intent, slots)
+    message = response["messages"][0]["content"]
+    text_to_speech(message)
+
     return response
 

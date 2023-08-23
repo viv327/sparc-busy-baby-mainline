@@ -2,8 +2,11 @@ import openai
 import json
 import boto3
 from datetime import datetime
+import dateutil.tz
 from botocore.exceptions import ClientError
 from ..api import get_baby_profile, calculate_daily_sleep_time, calculate_daily_milk_volume
+
+timeZone = dateutil.tz.gettz('US/Eastern')
 
 
 def _get_api_key():
@@ -38,7 +41,8 @@ def _construct_prompt(baby_id, user_utterance):
     daily_sleep_time = calculate_daily_sleep_time(baby_id)
     daily_milk_volume = calculate_daily_milk_volume(baby_id)
 
-    today = datetime.utcnow().strftime("%Y-%m-%d")
+    # today = datetime.utcnow().strftime("%Y-%m-%d")
+    today = datetime.now(tz=timeZone).strftime('%Y-%m-%d')
 
     prompt_template = '''
         Today is {today}. {first_name} was born on {birthday}, gender {gender}, height {height} inches, weight {weight} pounds, sleeps {daily_sleep_time} per day, drinks {daily_milk_volume} ml milk per day.

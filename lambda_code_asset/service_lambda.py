@@ -380,19 +380,19 @@ def dispatch(intent: str, slots: any):
         user_utterance = getSlotVal(USER_UTTERANCE)
         message = get_openai_response(DEMO_BABY_ID, user_utterance)
 
-    # actionType = ""
-    # if intent == ADD_GROWTH or intent == ADD_VACCINE or intent == ADD_MEDICATION or intent == ADD_BABY:
-    #     actionType = "Delegate"
-    # else:
-    #     actionType = "Close"
+    actionType = ""
+    if intent == GET_RECORD or intent == DELETE_RECORD or intent == UPDATE_RECORD or intent == ENABLE_PREMIUM_FEATURE or CONSULT_AI:
+        actionType = "Close"
+    else:
+        actionType = "Delegate"
 
 
     # Generate response
     response = {
         "sessionState": {
             "dialogAction": {
-                # "type": actionType
-                "type": "Delegate"
+                "type": actionType
+                # "type": "Delegate"
             },
             "intent": {
                 "name": intent,

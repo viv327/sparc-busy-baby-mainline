@@ -60,7 +60,7 @@ FOOD_NOTE = "food_note"
 
 # ADD_FORMULA = "createFormulaMilk"
 # FIRST_NAME = "first_name"
-FORMULA_VOLUME = "formula_volume.growth_data"
+FORMULA_VOLUME = "formula_volume"
 FORMULA_TIME = "formula_time"
 FORMULA_DATE = "formula_date"
 FORMULA_NOTE = "formula_note"

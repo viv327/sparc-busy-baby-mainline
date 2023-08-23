@@ -104,7 +104,7 @@ def dispatch(intent: str, slots: any):
         # so if else only needed for date, not for time, as in the current design.
         formula_time = getSlotVal(FORMULA_TIME)
         formula_time = datetime.strptime(record_date + " " + formula_time, "%Y-%m-%d %H:%M").isoformat()
-        formula_volume = getSlotVal(FORMULA_VOLUME)
+        formula_volume = slots[FORMULA_VOLUME]["subSlots"]["growth_data"]["value"]["interpretedValue"]
         formula_note = getSlotVal(FORMULA_NOTE)
         result = add_bottle_feed(DEMO_BABY_ID, record_date, formula_time, formula_volume, formula_note)
         message = "Add bottle feed result: {}".format(result)

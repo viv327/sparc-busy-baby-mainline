@@ -95,6 +95,7 @@ def dispatch(intent: str, slots: any):
 
         result = add_sleep_record(DEMO_BABY_ID, record_date, start_time, end_time, sleep_note)
         message = "Add sleep record result: {}".format(result)
+        # message = "Thanks for confirming. We have taken the sleep record! Have a nice dream."
 
     if intent == ADD_FORMULA:
         record_date = datetime.now(tz=timeZone).strftime('%Y-%m-%d') if getSlotVal(FORMULA_DATE) == "today" else getSlotVal(FORMULA_DATE)
@@ -379,19 +380,19 @@ def dispatch(intent: str, slots: any):
         user_utterance = getSlotVal(USER_UTTERANCE)
         message = get_openai_response(DEMO_BABY_ID, user_utterance)
 
-    actionType = ""
-    if intent == ADD_GROWTH or intent == ADD_VACCINE or intent == ADD_MEDICATION or intent == ADD_BABY:
-        actionType = "Delegate"
-    else:
-        actionType = "Close"
+    # actionType = ""
+    # if intent == ADD_GROWTH or intent == ADD_VACCINE or intent == ADD_MEDICATION or intent == ADD_BABY:
+    #     actionType = "Delegate"
+    # else:
+    #     actionType = "Close"
 
 
     # Generate response
     response = {
         "sessionState": {
             "dialogAction": {
-                "type": actionType
-                # "type": "Delegate"
+                # "type": actionType
+                "type": "Delegate"
             },
             "intent": {
                 "name": intent,

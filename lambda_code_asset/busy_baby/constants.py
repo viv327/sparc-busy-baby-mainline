@@ -21,7 +21,7 @@ GET_RECORD = "getRecord"
 DELETE_RECORD = "deleteRecord"
 UPDATE_RECORD = "updateRecord"
 ENABLE_PREMIUM_FEATURE = "premiumFeature"  # this is to demo AWS resource creation using Lex
-CONSULT_AI = "consult_ai"  # this is to invoke OpenAI API to get AI chat response
+CONSULT_AI = "consultAI"  # this is to invoke OpenAI API to get AI chat response
 
 # ADD_BABY = "createBaby"
 GENDER = "baby_gender"

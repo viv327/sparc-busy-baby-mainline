@@ -392,7 +392,6 @@ def dispatch(intent: str, slots: any):
         "sessionState": {
             "dialogAction": {
                 "type": actionType
-                # "type": "Delegate"
             },
             "intent": {
                 "name": intent,

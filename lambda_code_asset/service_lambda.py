@@ -380,7 +380,7 @@ def dispatch(intent: str, slots: any):
         message = get_openai_response(DEMO_BABY_ID, user_utterance)
 
     actionType = ""
-    if intent == ADD_GROWTH or intent == ADD_VACCINE or intent == ADD_MEDICATION:
+    if intent == ADD_GROWTH or intent == ADD_VACCINE or intent == ADD_MEDICATION or intent == ADD_BABY:
         actionType = "Delegate"
     else:
         actionType = "Close"

@@ -390,7 +390,7 @@ def dispatch(intent: str, slots: any):
     response = {
         "sessionState": {
             "dialogAction": {
-                "type": "Close"
+                "type": actionType
                 # "type": "Delegate"
             },
             "intent": {
@@ -489,8 +489,8 @@ def main(event, context):
         response = dispatch(intent, slots)
 
     # response = dispatch(intent, slots)
-    message = response["messages"][0]["content"]
-    text_to_speech(message)
+    # message = response["messages"][0]["content"]
+    # text_to_speech(message)
 
     return response
 

@@ -957,7 +957,11 @@ def calculate_daily_sleep_time(baby_id):
         day = today - timedelta(days=i)
         day_format = day.strftime('%Y-%m-%d')
         total_sleep_time += get_total_sleep_time(baby_id, day_format)
-    result = format_timedelta(total_sleep_time)
+
+    # average
+    division_result = total_sleep_time.total_seconds() / 3
+    result_timedelta = timedelta(seconds=division_result)
+    result = format_timedelta(result_timedelta)
     return result
 
 
@@ -973,4 +977,7 @@ def calculate_daily_milk_volume(baby_id):
         day = today - timedelta(days=i)
         day_format = day.strftime('%Y-%m-%d')
         total_bottle_volume += int(get_total_bottle_feed_volume(baby_id, day_format))
-    return str(total_bottle_volume)
+
+    ave_bottle_volume = total_bottle_volume // 3
+    return str(ave_bottle_volume)
+

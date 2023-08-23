@@ -122,4 +122,4 @@ UPDATE_DATA = "update_date_unit"
 
 
 # USER_UTTERANCE = "user_utterance"
-USER_UTTERANCE = "consult"
+CONSULT = "consult"

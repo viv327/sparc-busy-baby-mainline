@@ -85,6 +85,6 @@ def get_openai_response(baby_id, user_utterance):
         messages=messages
     )
     reply = chat.choices[0].message.content
-    print(f'ChatGPT: {reply}')
+    # print(f'ChatGPT: {reply}')
     return reply
 

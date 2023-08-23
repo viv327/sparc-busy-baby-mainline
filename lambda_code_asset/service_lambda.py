@@ -381,7 +381,7 @@ def dispatch(intent: str, slots: any):
         message = get_openai_response(DEMO_BABY_ID, user_utterance)
 
     actionType = ""
-    if intent == GET_RECORD or intent == DELETE_RECORD or intent == UPDATE_RECORD or intent == ENABLE_PREMIUM_FEATURE or CONSULT_AI:
+    if intent == GET_RECORD or intent == DELETE_RECORD or intent == UPDATE_RECORD or intent == ENABLE_PREMIUM_FEATURE or intent == CONSULT_AI:
         actionType = "Close"
     else:
         actionType = "Delegate"
